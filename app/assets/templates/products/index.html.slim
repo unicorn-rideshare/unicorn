@@ -1,0 +1,29 @@
+.products ng-controller="ProductsIndexCtrl"
+  .row
+    .col-md-12
+      h3
+        | Products
+        a.btn.btn-link href="#/products/new"
+          i.fa.fa-plus-circle>
+          | New Product
+  .row
+    .col-md-12
+      spinner
+      zero-state ng-hide="showActivity || products.length > 0"
+      table.table ng-hide="showActivity || products.length == 0"
+        tr
+          th ID
+          th GTIN
+          th Image
+          th Product Name
+          th Actions
+        tr.product id="product_{{ product.id }}" ng-repeat="product in products"
+          td.product-id {{ product.id }}
+          td.product-gtin
+            img height="50" ng-src="{{ product.barcode_uri }}"
+          td.product-image
+            img height="50" ng-src="{{ product.image_url }}"
+          td.product-name {{ product.data.name }} {{ product.data.color }} {{ product.data.style }} {{ product.data.size }}
+          td.product-actions
+            a ng-href="#/products/{{product.id}}/edit" Edit
+      paginate

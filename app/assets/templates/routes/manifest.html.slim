@@ -1,0 +1,32 @@
+.modal-header
+  h3.modal-title Manifest
+  .loaded-items-filter
+    input ng-model="filter.includeLoadedItems" type="checkbox"
+    span Include Loaded Items
+  .modal-body
+    .product
+      .row
+        .col-md-12
+          ol.products
+            li.product id="product_{{product.id}}" ng-repeat="product in itemsToDisplay"
+              .row
+                .product-header
+                  .col-xs-3
+                    img ng-src="{{ product.barcode_uri }}"
+                  .col-xs-6
+                    h6 {{ product.data.name }}
+                    p {{ product.data.price}}
+                    p {{ product.data.mpn}}
+                    p {{ product.data.sku }}
+                  .col-xs-3
+                    .pull-left ng-hide="!filter.includeLoadedItems"
+                      h2 {{ itemsLoadedCountByGtin[product.gtin] || 0 }}
+                      span loaded
+                    .pull-right
+                      h2 {{ itemsToLoadCountRemainingForGtin(product.gtin) }}
+                      span more to load
+  .modal-footer
+    .pull-left
+      a.btn.btn-link href="" ng-click="cancel()" type="button"
+        i.glyphicon.glyphicon-remove>
+        | Dismiss

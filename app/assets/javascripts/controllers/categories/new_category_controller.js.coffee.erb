@@ -1,0 +1,15 @@
+module = angular.module('unicornApp.controllers')
+
+module.controller 'NewCategoryCtrl', ['$scope', '$location', 'Category', 'companyPreference', 'flashService',
+  ($scope, $location, Category, companyPreference, flashService) ->
+
+    $scope.submit = ->
+      categoryParams =
+        company_id: companyPreference.get()
+        name: $scope.name
+        abbreviation: $scope.abbreviation
+      category = Category.save(categoryParams)
+      category.$promise.then ->
+        flashService.success('Category created successfully')
+        $location.path('/categories')
+]

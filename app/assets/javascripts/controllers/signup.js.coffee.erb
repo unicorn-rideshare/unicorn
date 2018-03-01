@@ -1,0 +1,18 @@
+module = angular.module('unicornApp.controllers')
+
+module.controller 'SignupCtrl', ['$scope', '$routeParams', 'authentication', 'flashService', 'User', 'Provider',
+  ($scope, $routeParams, authentication, flashService, User, Provider) ->
+    $scope.signup = ->
+      $scope.showActivity = true
+      $scope.contact =
+        name: $scope.name
+        email: $scope.email
+        time_zone_id: 'Pacific Time (US & Canada)'
+      $scope.createProvider = true
+      flashService.clear()
+      authentication.signup(User, $scope).then ->
+        console.log 'signup successful!'
+      .catch ->
+        $scope.showActivity = false
+        flashService.danger('Signup attempt failed.')
+]

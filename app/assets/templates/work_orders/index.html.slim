@@ -1,0 +1,84 @@
+.work-orders ng-controller="WorkOrdersIndexCtrl"
+  .row
+    .col-md-12
+      h3
+        | Work Orders
+        a.btn.btn-link href="#/work_orders/new"
+          i.fa.fa-plus-circle>
+          | New Work Order
+  .row
+    .col-md-9
+      spinner
+      zero-state ng-hide="showActivity || workOrders.length > 0"
+      table.table ng-hide="showActivity || workOrders.length == 0"
+        tr
+          th #
+          th Customer
+          th Scheduled Date
+          th Duration
+          th Status
+          th Actions
+        tr work-order-row="true" workOrder="workOrder" ng-repeat="workOrder in workOrders"
+      paginate
+    .col-md-3
+      .panel.panel-default ng-hide="hideWorkOrderStatusFilter"
+        .panel-heading
+          h3.panel-title Filter Work Orders
+        .panel-body
+          form.filter-form.work-orders-filter
+            .form-group
+              label.control-label By status
+              .input-group.checkbox-group
+                label.checkbox ng-hide="!showAbandonedFilter"
+                  input type="checkbox" name="abandoned" ng-model="filter.status.abandoned"
+                  | Abandoned
+                label.checkbox
+                  input type="checkbox" name="awaiting_schedule" ng-model="filter.status.awaiting_schedule"
+                  | Awaiting schedule
+                label.checkbox
+                  input type="checkbox" name="scheduled" ng-model="filter.status.scheduled"
+                  | Scheduled
+                label.checkbox
+                  input type="checkbox" name="pending_acceptance" ng-model="filter.status.pending_acceptance"
+                  | Pending Acceptance
+                label.checkbox
+                  input type="checkbox" name="timed_out" ng-model="filter.status.timed_out"
+                  | Timed Out
+                label.checkbox
+                  input type="checkbox" name="en_route" ng-model="filter.status.en_route"
+                  | En route
+                label.checkbox
+                  input type="checkbox" name="arriving" ng-model="filter.status.arriving"
+                  | Arriving
+                label.checkbox
+                  input type="checkbox" name="in_progress" ng-model="filter.status.in_progress"
+                  | In progress
+                label.checkbox
+                  input type="checkbox" name="paused" ng-model="filter.status.paused"
+                  | Paused
+                label.checkbox
+                  input type="checkbox" name="canceled" ng-model="filter.status.canceled"
+                  | Canceled
+                label.checkbox
+                  input type="checkbox" name="completed" ng-model="filter.status.completed"
+                  | Completed
+            .form-group
+              label.control-label Show standalone?
+              .input-group.checkbox-group
+                label.checkbox
+                  input type="checkbox" name="show_standalone" ng-checked="showStandalone" ng-model="showStandalone"
+                  | Yes, only standalone
+            .form-group
+              label.control-label On or After
+              .input-group.on-or-after
+                input.form-control.on-or-after type="text" ng-model="filter.onOrAfter" datepicker-popup="yyyy-MM-dd" is-open="onOrAfterOpened" datepicker-options="{showWeeks: false}"
+                span.input-group-btn
+                  button.btn.btn-default type="button" ng-click="toggle($event, 'onOrAfterOpened')"
+                    i.fa.fa-calendar
+            .form-group
+              label.control-label On or Before
+              .input-group.on-or-before
+                input.form-control.on-or-before type="text" ng-model="filter.onOrBefore" datepicker-popup="yyyy-MM-dd" is-open="onOrBeforeOpened" datepicker-options="{showWeeks: false}"
+                span.input-group-btn
+                  button.btn.btn-default type="button" ng-click="toggle($event, 'onOrBeforeOpened')"
+                    i.fa.fa-calendar

@@ -1,0 +1,90 @@
+upstream unicorn {
+  server unix:/opt/unicorn/tmp/unicorn.sock fail_timeout=0;
+}
+
+upstream websocket {
+  server 127.0.0.1:3001;
+}
+
+server {
+  listen 80 default deferred;
+  root /opt/unicorn/public;
+
+  access_log /var/log/nginx/access.log;
+  error_log /var/log/nginx/error.log;
+
+  location ^~ /assets/ {
+    gzip_static on;
+    expires max;
+    add_header Cache-Control public;
+  }
+
+  try_files $uri/index.html $uri @unicorn;
+  location @unicorn {
+    proxy_set_header  X-Real-IP       $remote_addr;
+    proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header  Host $http_host;
+    proxy_redirect    off;
+    proxy_pass        http://unicorn;
+  }
+
+  location /websocket {
+    access_log off;
+
+    proxy_pass http://websocket/websocket;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+  }
+
+  error_page 500 502 503 504 /500.html;
+  client_max_body_size 4G;
+  keepalive_timeout 10;
+}
+
+server {
+  listen 443 deferred;
+  root /opt/unicorn/public;
+
+  ssl on;
+  ssl_certificate /etc/pki/server.crt;
+  ssl_certificate_key /etc/pki/server.key;
+
+  ssl_protocols        SSLv3 TLSv1 TLSv1.1 TLSv1.2;
+  ssl_ciphers RC4:HIGH:!aNULL:!MD5;
+  ssl_prefer_server_ciphers on;
+  ssl_session_cache    shared:SSL:10m;
+  ssl_session_timeout  10m;
+
+  access_log /var/log/nginx/ssl_access.log;
+  error_log /var/log/nginx/ssl_error.log;
+
+  location ^~ /assets/ {
+    gzip_static on;
+    expires max;
+    add_header Cache-Control public;
+  }
+
+  try_files $uri/index.html $uri @unicorn;
+  location @unicorn {
+    proxy_set_header  X-Real-IP         $remote_addr;
+    proxy_set_header  X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header  X-Forwarded-Proto $scheme;
+    proxy_set_header  Host $http_host;
+    proxy_redirect    off;
+    proxy_pass        http://unicorn;
+  }
+
+  location /websocket {
+    access_log off;
+
+    proxy_pass http://websocket/websocket;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+  }
+
+  error_page 500 502 503 504 /500.html;
+  client_max_body_size 4G;
+  keepalive_timeout 10;
+}

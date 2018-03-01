@@ -1,0 +1,21 @@
+tr.work-order id="zoned_workOrder_{{ workOrder.id }}" ng-class="workOrderRowClassName(workOrder)"
+  td.customer-name {{ workOrder.customer | contactName }}
+  /td {{ workOrder.scheduled_start_at ? (workOrder.scheduled_start_at | date: 'EEE. M/dd, h:mm a') : '--' }}
+  td.started-at {{ workOrder.started_at ? (workOrder.started_at | date: 'h:mm a') : '--' }}
+  /td {{ workOrder.arrived_at ? (workOrder.arrived_at | date: 'EEE. M/dd, h:mm a') : '--' }}
+  td.ended-at {{ workOrder.ended_at ? (workOrder.ended_at | date: 'h:mm a') : '--' }}
+  td.duration {{ workOrder.duration ? (workOrder.duration / 60) + ' min' : '--' }}
+  td.status {{ workOrder.status }}
+  td.provider-rating {{ workOrder.provider_rating || '--' }}
+  td.inventory-disposition {{ workOrder.items_delivered.length }}/{{ workOrder.items_ordered.length }}
+  td.action-icons
+    a ng-click="openManifest(workOrder)"
+      i.fa.fa-truck
+    a ng-click="openComments(workOrder)"
+      i.fa.fa-comments
+    a ng-click="openAttachments(workOrder)"
+      i.fa.fa-paperclip
+    a ng-click="openMessaging(workOrder)"
+      i.fa.fa-envelope
+    a ng-hide="true" ng-click="openRoute(workOrder)"
+      i.fa.fa-exchange

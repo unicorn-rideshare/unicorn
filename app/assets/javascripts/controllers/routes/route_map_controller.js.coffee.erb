@@ -1,0 +1,252 @@
+module = angular.module('unicornApp.controllers')
+
+module.controller 'RouteMapCtrl', [
+  '$scope', '$controller', 'Route', 'Directions', 'websocket',
+  ($scope, $controller, Route, Directions, websocket) ->
+
+    $scope.checkin = null
+    $scope.coordinates = []
+    $scope.workOrderMarkers = {}
+    $scope.originMarker = null
+    $scope.recommendedRoutePolyline = null
+    $scope.providerMarker = null
+    $scope.providerLatLng = null
+    $scope.providerPolyline = null
+    $scope.providerHeatmap = null
+
+    $scope.$watch 'route', (newValue, oldValue) ->
+      if newValue
+        fn = -> $scope.renderMap()
+        setTimeout(fn, 25)
+
+        onCheckinReceived = (checkin) ->
+          if $scope.route.status == 'in_progress'
+            $scope.checkin = checkin
+            $scope.coordinates = [] unless $scope.coordinates
+
+            latitude = checkin.latitude
+            longitude = checkin.longitude
+            $scope.providerLatLng = new google.maps.LatLng(latitude, longitude)
+            $scope.coordinates.push($scope.providerLatLng)
+
+            $scope.renderProviderLocation()
+            $scope.zoomToBestFit()
+
+        channel = 'user_checkins_' + $scope.route.provider_origin_assignment.provider.user_id
+        websocket.bind(channel, 'new', onCheckinReceived)
+
+    $scope.mapClicked = (event) ->
+        event.preventDefault()
+        event.stopPropagation()
+
+        $scope.openInfowindow.close() if $scope.openInfowindow
+
+    $scope.renderProviderLocation = ->
+      return unless $scope.providerLatLng
+
+      if ($scope.providerMarker)
+        $scope.providerMarker.setMap(null)
+        delete $scope.providerMarker
+
+      image =
+        url: $scope.route.provider_origin_assignment.provider.profile_image_url
+        scaledSize: new google.maps.Size(30, 30)
+        origin: new google.maps.Point(0, 0)
+
+      $scope.providerMarker = new google.maps.Marker
+        position: $scope.providerLatLng
+        map: $scope.map
+        title: $scope.route.provider_origin_assignment.provider.contact.name
+        icon: image
+
+    $scope.originLatLng = ->
+      latitude= $scope.route.provider_origin_assignment.origin.contact.latitude
+      longitude = $scope.route.provider_origin_assignment.origin.contact.longitude
+      new google.maps.LatLng(latitude, longitude)
+
+    $scope.zoomToBestFit = ->
+      bounds = new google.maps.LatLngBounds()
+
+      originLatLng = $scope.originLatLng()
+      bounds.extend(originLatLng) if originLatLng
+
+      if $scope.coordinates.length > 0
+        for latLng in $scope.coordinates
+          bounds.extend(latLng)
+
+      $scope.map.fitBounds(bounds)
+
+    $scope.resolveOriginLatLng = ->
+      centerLatitude = $scope.route.provider_origin_assignment.origin.contact.latitude
+      centerLongitude = $scope.route.provider_origin_assignment.origin.contact.longitude
+      new google.maps.LatLng(centerLatitude, centerLongitude)
+
+    $scope.renderMap = ->
+      unless $scope.map
+        centerLatLng = $scope.resolveOriginLatLng()
+
+        defaultOptions =
+          center: centerLatLng
+          zoom: 25
+
+        canvas = document.getElementById($scope.elementId)
+        $scope.map = new google.maps.Map(canvas, defaultOptions) if canvas
+
+        $scope.coordinates = [centerLatLng]
+
+        $scope.renderWorkOrders()
+        $scope.renderProviderLocation() if ['en_route', 'in_progress'].indexOf($scope.route.status) > -1
+        $scope.renderProviderPolyline() if $scope.route.checkin_coordinates
+        $scope.renderOrigin()
+        $scope.renderRecommendedRoutePolyline()
+        $scope.zoomToBestFit()
+        $scope.renderTraffic()
+
+    $scope.renderOrigin = ->
+      if $scope.originMarker
+        $scope.originMarker.setMap(null)
+        delete $scope.originMarker
+
+      latitude = $scope.route.provider_origin_assignment.origin.contact.latitude
+      longitude = $scope.route.provider_origin_assignment.origin.contact.longitude
+      title = $scope.route.provider_origin_assignment.origin.contact.name
+      icon =
+        url: '<%= asset_path('map-pin.png') %>'
+        scaledSize: new google.maps.Size(38, 42),
+        origin: new google.maps.Point(0, 0),
+      $scope.createMarker(latitude, longitude, title, icon)
+
+    $scope.renderTraffic = ->
+      trafficLayer = new google.maps.TrafficLayer()
+      trafficLayer.setMap($scope.map)
+
+    $scope.createMarker = (latitude, longitude, title, icon) ->
+      latLng = new google.maps.LatLng(latitude, longitude)
+      $scope.coordinates.push(latLng)
+      new google.maps.Marker(
+        position: latLng,
+        map: $scope.map,
+        title: title,
+        icon: icon
+      )
+
+    $scope.renderWorkOrders = ->
+      for workOrder in $scope.route.work_orders
+        if $scope.workOrderMarkers[workOrder.id]
+          $scope.workOrderMarkers[workOrder.id].setMap(null)
+          delete $scope.workOrderMarkers[workOrder.id]
+
+        latitude = workOrder.customer.contact.latitude
+        longitude = workOrder.customer.contact.longitude
+        title = workOrder.customer.contact.name
+        icon =
+          url: '<%= asset_path('map-pin.png') %>'
+          scaledSize: new google.maps.Size(38, 42),
+          origin: new google.maps.Point(0, 0),
+
+        marker = $scope.createMarker(latitude, longitude, title, icon)
+        infowindow = new google.maps.InfoWindow()
+        content = title + ' (stop ' + new String($scope.route.work_orders.indexOf(workOrder) + 1) + ' of ' + $scope.route.work_orders.length + ')'
+        for event in ['click', 'mouseover']
+          google.maps.event.addListener(marker, event,
+            ((marker, content, infowindow) ->
+              ->
+                $scope.openInfowindow.close() if $scope.openInfowindow
+                infowindow.setContent(content)
+                infowindow.open($scope.map, marker)
+                $scope.openInfowindow = infowindow
+            )(marker, content, infowindow)
+          )
+        google.maps.event.addListener(marker, 'mouseout',
+          ((marker, content, infowindow) ->
+            ->
+              $scope.openInfowindow.close() if $scope.openInfowindow
+              delete $scope.openInfowindow
+          )(marker, content, infowindow)
+        )
+        $scope.workOrderMarkers[workOrder.id] = marker
+
+    $scope.renderProviderPolyline = ->
+      if $scope.providerPolyline
+        $scope.providerPolyline.setMap(null)
+        delete $scope.providerPolyline
+
+      if $scope.providerHeatmap
+        $scope.providerHeatmap.setMap(null)
+        delete $scope.providerHeatmap
+
+      coordinates = []
+      for coord in $scope.route.checkin_coordinates
+        latitude = coord[0]
+        longitude = coord[1]
+        latLng = new google.maps.LatLng(latitude, longitude)
+        $scope.coordinates.push(latLng) if $scope.coordinates.indexOf(latLng) == -1
+        coordinates.push(latLng)
+
+      $scope.providerPolyline = new google.maps.Polyline({
+        map: $scope.map,
+        path: coordinates,
+        geodesic: true,
+        strokeColor: '#70d1f0',
+        strokeOpacity: 1.0,
+        strokeWeight: 2.25
+      })
+
+      $scope.providerHeatmap = new google.maps.visualization.HeatmapLayer(
+        data: coordinates
+        map: $scope.map
+        radius: 20.0
+        opacity: null
+      )
+
+    $scope.renderRecommendedRoutePolyline = ->
+      if $scope.recommendedRoutePolyline
+        $scope.recommendedRoutePolyline.setMap(null)
+        delete $scope.recommendedRoutePolyline
+
+      waypoints = []
+      for workOrder in $scope.route.work_orders
+        latLng = [workOrder.customer.contact.latitude, workOrder.customer.contact.longitude]
+        waypoints.push(latLng)
+
+      params =
+        from_latitude: $scope.route.provider_origin_assignment.origin.contact.latitude
+        from_longitude: $scope.route.provider_origin_assignment.origin.contact.longitude
+        to_latitude: $scope.route.provider_origin_assignment.origin.contact.latitude
+        to_longitude: $scope.route.provider_origin_assignment.origin.contact.longitude
+        waypoints: JSON.stringify(waypoints)
+        alternatives: 2
+        mode: 'fastest;truck;traffic:enabled'
+        representation: 'display'
+
+      #if drawShortestRoute == true
+      #   params.routeid = $scope.route.fastest_here_api_route_id
+      #   params.mode = 'shortest;truck'
+
+      params.routeid = $scope.route.fastest_here_api_route_id if $scope.route.fastest_here_api_route_id
+
+      directions = Directions.get params, ->
+        $scope.directions = directions
+        route = $scope.directions['Route']
+        route = route[0] if route && route.length > 0 && Object.prototype.toString.call(route) == '[object Array]'
+        shape = route['Shape'] if route
+        shape ||= []
+        coordinates = []
+        for coord in shape
+          latitude = coord.split(',')[0]
+          longitude = coord.split(',')[1]
+          latLng = new google.maps.LatLng(latitude, longitude)
+          $scope.coordinates.push(latLng) if $scope.coordinates.indexOf(latLng) == -1
+          coordinates.push(latLng)
+
+        $scope.recommendedRoutePolyline = new google.maps.Polyline({
+          map: $scope.map,
+          path: coordinates,
+          geodesic: true,
+          strokeColor: 'darkBlue',
+          strokeOpacity: 1.0,
+          strokeWeight: 5.0
+        })
+
+        $scope.zoomToBestFit()
+]

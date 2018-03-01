@@ -1,0 +1,20 @@
+form.category-form.edit-category novalidate=true name="form" ng-controller="EditCategoryCtrl" ng-submit="submit()"
+  .row
+    .col-md-12
+      h3 Edit Category
+  spinner
+  .row.col-md-8 ng-hide="showActivity"
+    .form-group
+      label.control-label.required Name
+      input.form-control.name name="name" type="text" required="true" ng-model="category.name"
+    .form-group
+      label.control-label.required Abbreviation
+      input.form-control.name name="abbreviation" type="text" ng-model="category.abbreviation"
+  .row ng-hide="showActivity"
+    .col-md-12
+      button.btn.btn-primary type="submit" ng-disabled="form.$invalid"
+        i.fa.fa-save>
+        | Update Category
+      a.btn.btn-link ng-href="#/categories"
+        i.fa.fa-close>
+        | Cancel

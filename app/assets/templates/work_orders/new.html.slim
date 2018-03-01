@@ -1,0 +1,95 @@
+form.work-order-form.new-work-order name="workOrder" ng-controller="NewWorkOrderCtrl" ng-submit="submit()"
+  .row
+    .col-md-12
+      h3 Create a Work Order
+  spinner
+  .row ng-hide="showActivity"
+    .col-md-8
+      ng-form name="workOrderParameters"
+        .form-group
+          label.control-label Customer
+          select.form-control.customer name="customer" ng-model="customer" ng-options="customer as (customer | contactName) for customer in customers" required="true" ng-disabled="jobId"
+            option value=""  --Select Customer--
+          span.help-block Person or party for whom work is being performed
+        .form-group ng-hide="jobId"
+          label.control-label Service Provider
+          select.form-control.provider name="provider" ng-model="provider" ng-options="provider as (provider | contactName) for provider in providers" ng-required="!jobId" ng-disabled="routeId"
+            option value=""  --Select Provider--
+          span.help-block Person or party who will perform the work
+        .form-group ng-hide="!jobId"
+          label.control-label Service Providers
+          .row.provider-group ng-repeat="provider in providers"
+            label.checkbox-inline
+              input.provider type="checkbox" name="providers" ng-model="workOrderProviders[provider.id]"
+              | {{ provider.contact.name }}
+          span.help-block Persons or parties who will perform the work
+        .form-group ng-show="!routeId"
+          label.control-label Duration
+          select.form-control name="estimated_duration" ng-model="estimated_duration" ng-required="!routeId"
+            option value=""  --Select Duration--
+            option value="30"  0.5 hours
+            option value="60"  1.0 hours
+            option value="90"  1.5 hours
+            option value="120"  2.0 hours
+            option value="180"  3.0 hours
+            option value="240"  4.0 hours
+            option value="300"  5.0 hours
+            option value="360"  6.0 hours
+            option value="420"  7.0 hours
+            option value="480"  8.0 hours
+            option value="540"  9.0 hours
+            option value="600"  10.0 hours
+          span.help-block Estimated amount of time to complete work order
+      .form-group
+        label.control-label Description
+        textarea.form-control.description name="description" ng-model="description"
+        span.help-block Details about the work order
+      .form-group ng-show="!routeId"
+        label.control-label Select Appointment Time
+        ul.list-group ng-hide="workOrderParameters.$valid && workOrderProviderIds.length > 0"
+          li.list-group-item.disabled
+            span.glyphicon.glyphicon-info-sign
+            | Select a customer, provider and estimated duration to see availability
+        .list-group.availabilities ng-cloak="" ng-show="workOrderParameters.$valid && workOrderProviderIds.length > 0"
+          a.list-group-item.availability href="" ng-class="{'active': availabilities.selected == availability}" ng-click="availabilities.selected = availability" ng-repeat="availability in availabilities"
+            span.glyphicon ng-class="{'glyphicon-ok': availabilities.selected == availability, 'glyphicon-none': availabilities.selected != availability}"
+            | {{ availability | date:'EEE. M/dd, h:mm a' }}
+        span.help-block ng-show="workOrderParameters.$valid"
+          span.glyphicon.glyphicon-time
+          | All times {{ customer.contact.time_zone_id }}
+    .col-md-4 ng-show="!routeId"
+      .form-group
+        label.control-label Schedule work order for
+        .radio ng-init="firstAvailable = true"
+          .row
+            label
+              input name="schedule" ng-click="startDate = today" ng-model="firstAvailable" ng-value="true" type="radio"
+              | First available date and time
+          .row
+            label
+              input name="schedule" ng-model="firstAvailable" ng-value="false" type="radio"
+              | On or after a specific date
+        div collapse="firstAvailable"
+          datepicker.first-available min-date="today" ng-model="startDate" show-weeks="false"
+          span.help-block Select the earliest date on which you would like to schedule the work order
+      .form-group
+        label.control-label style="width: 100%;"
+          span.pull-left
+            | Configured Components
+          span.pull-right
+            a.add-component ng-click="config.components.push({ component: '' })"
+              i.fa.fa-plus
+        ol.list-group.configured-components
+          li.list-group-item.work-order-component ng-repeat="component in config.components"
+            span
+              input.work-order-component type="text" value="{{ component.component }}" ng-keypress="updateComponents($event)" ng-focus="this.value = this.value;"
+            span.pull-right
+              a ng-click="config.components.splice(config.components.indexOf(component), 1)"
+                i.fa.fa-remove
+  .form-actions ng-hide="showActivity"
+    button.btn.btn-primary ng-disabled="!valid()" type="submit"
+      span.glyphicon.glyphicon-floppy-disk
+      | Create Work Order
+    a.btn.btn-link ng-href="#/work_orders"
+      i.fa.fa-close>
+      | Cancel

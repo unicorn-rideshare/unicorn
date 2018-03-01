@@ -1,0 +1,28 @@
+<% if user_signed_in? %>
+    <li class="dropdown dropdown-extended dropdown-inbox" is-open="messagingMenuOpen" ng-controller="MessagesIndexCtrl">
+      <a href class="dropdown-toggle messages-dropdown-toggle messaging-menu-toggle" data-toggle="dropdown" data-hover="dropdown">
+        <i class="fa fa-envelope"></i>
+      </a>
+
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <p>You have {{ newMessagesCount }} new messages</p>
+        </li>
+
+        <li>
+          <div class="slim-scroll">
+            <ul class="dropdown-menu-list scroller">
+              <li message-preview="true" message="message" ng-repeat="message in messages"></li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="external">
+          <a ng-href="#/messages/inbox">
+            Go to inbox
+            <i class="m-icon-swapright"></i>
+          </a>
+        </li>
+      </ul>
+    </li>
+<% end %>

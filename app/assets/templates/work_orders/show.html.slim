@@ -1,0 +1,10 @@
+div id="map" ng-controller="ShowWorkOrderCtrl"
+  div.pull-left
+    h4
+      strong {{ workOrder.customer.contact.first_name }}
+      |, your delivery is workOrder.scheduled_start_at.to_datetime.strftime('%A, %B %d at %I:%M') + workOrder.scheduled_start_at.to_datetime.strftime('%p').downcase
+  div.pull-right
+    h4
+      strong {{ workOrder.status }}
+      | (on time)
+  div.map-canvas

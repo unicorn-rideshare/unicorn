@@ -1,0 +1,48 @@
+module = angular.module('unicornApp.controllers')
+
+module.controller 'NewJobCtrl', ['$scope', '$location', '$modal', 'Job', 'Customer', 'companyPreference', 'flashService',
+  ($scope, $location, $modal, Job, Customer, companyPreference, flashService) ->
+
+    $scope.data = {}
+
+    $scope.queryResources = ->
+      $scope.showActivity = true
+
+      companyId = companyPreference.get()
+
+      customers = Customer.query company_id: companyId, ->
+        $scope.customers = customers
+        $scope.showActivity = false
+
+    $scope.submit = ->
+      jobParams =
+        company_id: companyPreference.get()
+        customer_id: $scope.customer.id
+        name: $scope.name
+        type: $scope.type
+      job = Job.save(jobParams)
+      job.$promise.then ->
+        flashService.success('Job created successfully')
+        $location.path('/jobs')
+
+    $scope.queryResources()
+
+    $scope.openAttachments = (attachable) ->
+      $scope.modalInstance = $modal.open
+        templateUrl: '<%= asset_path('attachments.html') %>'
+        controller: 'AttachmentsIndexModalCtrl'
+        size: 'lg'
+        resolve:
+          attachable: -> attachable
+          attachableUri: -> 'jobs'
+          allowAttachmentDeletion: -> false
+
+    $scope.openComments = (commentable) ->
+      $scope.modalInstance = $modal.open
+        templateUrl: '<%= asset_path('comments.html') %>'
+        controller: 'CommentsIndexModalCtrl'
+        size: 'lg'
+        resolve:
+          commentable: -> commentable
+          commentableUri: -> 'jobs'
+]

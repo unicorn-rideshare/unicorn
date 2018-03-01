@@ -1,0 +1,502 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://api/v1/directions?alternatives=0&departure=now&from_latitude=33.9253024&from_longitude=-84.3857442&to_latitude=33.925491&to_longitude=-84.3518152&waypoints=
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - provide-ruby client library
+      Expect:
+      - ''
+  response:
+    status:
+      code: 200
+      message:
+    headers: {}
+    body:
+      encoding: UTF-8
+      string: '{
+    "routes": [
+        {
+            "mode": {
+                "type": "fastest",
+                "transport_modes": [
+                    "car"
+                ],
+                "traffic_mode": "enabled",
+                "features": []
+            },
+            "summary": {
+                "bounding_box": null,
+                "duration": 519,
+                "distance": 4126,
+                "miles": 2.5637777,
+                "minutes": 8.65,
+                "shape": null,
+                "flags": [
+                    "noThroughRoad",
+                    "builtUpArea"
+                ]
+            },
+            "bounding_box": {
+                "northwest": {
+                    "latitude": 33.930244,
+                    "longitude": -84.38571
+                },
+                "southeast": {
+                    "latitude": 33.92413,
+                    "longitude": -84.35154
+                }
+            },
+            "legs": [
+                {
+                    "bounding_box": null,
+                    "duration": 519,
+                    "distance": 4126,
+                    "miles": 2.5637777,
+                    "minutes": 8.65,
+                    "shape": null,
+                    "start": {
+                        "label": "Ferry Dr",
+                        "link_id": "+22652565",
+                        "mapped_coordinates": {
+                            "latitude": 33.925358,
+                            "longitude": -84.38571
+                        },
+                        "mapped_road_name": "Ferry Dr",
+                        "original_coordinates": {
+                            "latitude": 33.9253,
+                            "longitude": -84.38574
+                        },
+                        "side_of_street": "right",
+                        "shape_index": 0,
+                        "spot": 0.1704545,
+                        "type": "stopOver"
+                    },
+                    "end": {
+                        "label": null,
+                        "link_id": "-1163342281",
+                        "mapped_coordinates": {
+                            "latitude": 33.92549,
+                            "longitude": -84.351814
+                        },
+                        "mapped_road_name": null,
+                        "original_coordinates": {
+                            "latitude": 33.92549,
+                            "longitude": -84.351814
+                        },
+                        "side_of_street": "neither",
+                        "shape_index": 73,
+                        "spot": 0.3809524,
+                        "type": "stopOver"
+                    },
+                    "maneuvers": [
+                        {
+                            "duration": 49,
+                            "distance": 292,
+                            "miles": 0.1814404,
+                            "minutes": 0.81666666,
+                            "action": "depart",
+                            "bounding_box": {
+                                "northwest": {
+                                    "latitude": 33.927013,
+                                    "longitude": -84.38571
+                                },
+                                "southeast": {
+                                    "latitude": 33.925213,
+                                    "longitude": -84.38393
+                                }
+                            },
+                            "coordinates": {
+                                "latitude": 33.925358,
+                                "longitude": -84.38571
+                            },
+                            "direction": "forward",
+                            "id": "M1",
+                            "instruction": "Head toward Johnson Ferry Rd NE on Ferry Dr. Go for 292 m.",
+                            "length": 292,
+                            "next_maneuver": "M2",
+                            "next_road_name": "Ferry Dr",
+                            "notes": null,
+                            "road_name": null,
+                            "shape": [
+                                "33.925358,-84.3857084",
+                                "33.9252877,-84.3855357",
+                                "33.9252126,-84.3852353",
+                                "33.9252126,-84.3851388",
+                                "33.9252448,-84.3850422",
+                                "33.9253306,-84.3849027",
+                                "33.9254272,-84.3847954",
+                                "33.9257813,-84.384656",
+                                "33.926425,-84.3843663",
+                                "33.9270151,-84.3839264"
+                            ],
+                            "shape_quality": "exact",
+                            "start_angle": 116,
+                            "time": "2018-02-22T13:28:28-05:00",
+                            "to_link": "+22652565"
+                        },
+                        {
+                            "duration": 79,
+                            "distance": 503,
+                            "miles": 0.3125497,
+                            "minutes": 1.3166667,
+                            "action": "rightTurn",
+                            "bounding_box": {
+                                "northwest": {
+                                    "latitude": 33.927013,
+                                    "longitude": -84.38393
+                                },
+                                "southeast": {
+                                    "latitude": 33.925125,
+                                    "longitude": -84.379074
+                                }
+                            },
+                            "coordinates": {
+                                "latitude": 33.927013,
+                                "longitude": -84.38393
+                            },
+                            "direction": "right",
+                            "id": "M2",
+                            "instruction": "Turn right onto Johnson Ferry Rd NE. Go for 503 m.",
+                            "length": 503,
+                            "next_maneuver": "M3",
+                            "next_road_name": "Johnson Ferry Rd NE",
+                            "notes": null,
+                            "road_name": "Ferry Dr",
+                            "shape": [
+                                "33.9270151,-84.3839264",
+                                "33.9266825,-84.3833792",
+                                "33.9263391,-84.3828106",
+                                "33.9259851,-84.3822205",
+                                "33.9259315,-84.3821239",
+                                "33.9258349,-84.3819308",
+                                "33.9257061,-84.3815982",
+                                "33.9256847,-84.3815017",
+                                "33.9254057,-84.3803108",
+                                "33.925395,-84.3802142",
+                                "33.9253736,-84.3801284",
+                                "33.9252448,-84.3795812",
+                                "33.9251268,-84.379077"
+                            ],
+                            "shape_quality": "exact",
+                            "start_angle": 31,
+                            "time": "2018-02-22T13:29:17-05:00",
+                            "to_link": "-1147841093"
+                        },
+                        {
+                            "duration": 25,
+                            "distance": 112,
+                            "miles": 0.06959358,
+                            "minutes": 0.41666666,
+                            "action": "rightTurn",
+                            "bounding_box": {
+                                "northwest": {
+                                    "latitude": 33.925125,
+                                    "longitude": -84.3791
+                                },
+                                "southeast": {
+                                    "latitude": 33.92413,
+                                    "longitude": -84.379074
+                                }
+                            },
+                            "coordinates": {
+                                "latitude": 33.925125,
+                                "longitude": -84.379074
+                            },
+                            "direction": "right",
+                            "id": "M3",
+                            "instruction": "Turn right onto Roswell Rd (GA-9). Go for 112 m.",
+                            "length": 112,
+                            "next_maneuver": "M4",
+                            "next_road_name": "Roswell Rd",
+                            "notes": null,
+                            "road_name": "Johnson Ferry Rd NE",
+                            "shape": [
+                                "33.9251268,-84.379077",
+                                "33.9245367,-84.3790877",
+                                "33.924129,-84.3790984"
+                            ],
+                            "shape_quality": "exact",
+                            "start_angle": 105,
+                            "time": "2018-02-22T13:30:36-05:00",
+                            "to_link": "-757999545"
+                        },
+                        {
+                            "duration": 248,
+                            "distance": 2200,
+                            "miles": 1.3670167,
+                            "minutes": 4.133333,
+                            "action": "leftTurn",
+                            "bounding_box": {
+                                "northwest": {
+                                    "latitude": 33.93018,
+                                    "longitude": -84.3791
+                                },
+                                "southeast": {
+                                    "latitude": 33.92413,
+                                    "longitude": -84.35677
+                                }
+                            },
+                            "coordinates": {
+                                "latitude": 33.92413,
+                                "longitude": -84.3791
+                            },
+                            "direction": "left",
+                            "id": "M4",
+                            "instruction": "Turn left onto Mt Vernon Hwy NE. Go for 2.2 km.",
+                            "length": 2200,
+                            "next_maneuver": "M5",
+                            "next_road_name": "Mt Vernon Hwy NE",
+                            "notes": null,
+                            "road_name": "Roswell Rd",
+                            "shape": [
+                                "33.924129,-84.3790984",
+                                "33.9244294,-84.3772852",
+                                "33.9244938,-84.3768454",
+                                "33.9244401,-84.3762016",
+                                "33.9243972,-84.3756652",
+                                "33.9243758,-84.3748927",
+                                "33.924408,-84.3735194",
+                                "33.9244294,-84.3732083",
+                                "33.9244401,-84.3730581",
+                                "33.924526,-84.3726289",
+                                "33.924762,-84.3718457",
+                                "33.9252126,-84.3706226",
+                                "33.9256203,-84.3695176",
+                                "33.9257813,-84.3690991",
+                                "33.9263928,-84.3677151",
+                                "33.9268219,-84.3668354",
+                                "33.9272296,-84.3660843",
+                                "33.9274657,-84.3655157",
+                                "33.9279592,-84.3640459",
+                                "33.9292145,-84.3598402",
+                                "33.9297831,-84.3579519",
+                                "33.9299977,-84.3572974",
+                                "33.9301801,-84.3567717"
+                            ],
+                            "shape_quality": "exact",
+                            "start_angle": 181,
+                            "time": "2018-02-22T13:31:01-05:00",
+                            "to_link": "+22652612"
+                        },
+                        {
+                            "duration": 73,
+                            "distance": 761,
+                            "miles": 0.4728635,
+                            "minutes": 1.2166667,
+                            "action": "rightTurn",
+                            "bounding_box": {
+                                "northwest": {
+                                    "latitude": 33.930244,
+                                    "longitude": -84.35677
+                                },
+                                "southeast": {
+                                    "latitude": 33.92684,
+                                    "longitude": -84.35211
+                                }
+                            },
+                            "coordinates": {
+                                "latitude": 33.93018,
+                                "longitude": -84.35677
+                            },
+                            "direction": "right",
+                            "id": "M5",
+                            "instruction": "Turn right onto Crestline Pkwy. Go for 761 m.",
+                            "length": 761,
+                            "next_maneuver": "M6",
+                            "next_road_name": "Crestline Pkwy",
+                            "notes": null,
+                            "road_name": "Mt Vernon Hwy NE",
+                            "shape": [
+                                "33.9301801,-84.3567717",
+                                "33.9302444,-84.3564284",
+                                "33.9301908,-84.3562996",
+                                "33.9300942,-84.3561709",
+                                "33.929708,-84.3561709",
+                                "33.9289463,-84.3562353",
+                                "33.9282274,-84.3562889",
+                                "33.9279056,-84.3562889",
+                                "33.9277446,-84.356246",
+                                "33.9274549,-84.3561172",
+                                "33.9272511,-84.3559349",
+                                "33.9270902,-84.3557417",
+                                "33.9269507,-84.355495",
+                                "33.926897,-84.3553448",
+                                "33.9268541,-84.3550873",
+                                "33.9268434,-84.3548191",
+                                "33.9268541,-84.3545401",
+                                "33.9269185,-84.3542719",
+                                "33.9272296,-84.353199",
+                                "33.9272511,-84.352963",
+                                "33.9273047,-84.3521154"
+                            ],
+                            "shape_quality": "exact",
+                            "start_angle": 67,
+                            "time": "2018-02-22T13:35:09-05:00",
+                            "to_link": "-22725742"
+                        },
+                        {
+                            "duration": 40,
+                            "distance": 232,
+                            "miles": 0.14415812,
+                            "minutes": 0.6666667,
+                            "action": "sharpRightTurn",
+                            "bounding_box": {
+                                "northwest": {
+                                    "latitude": 33.927303,
+                                    "longitude": -84.35211
+                                },
+                                "southeast": {
+                                    "latitude": 33.92549,
+                                    "longitude": -84.35154
+                                }
+                            },
+                            "coordinates": {
+                                "latitude": 33.927303,
+                                "longitude": -84.35211
+                            },
+                            "direction": "hardRight",
+                            "id": "M6",
+                            "instruction": "Turn sharp right onto Peachtree Dunwoody Rd. Go for 232 m.",
+                            "length": 232,
+                            "next_maneuver": "M7",
+                            "next_road_name": "Peachtree Dunwoody Rd",
+                            "notes": null,
+                            "road_name": "Crestline Pkwy",
+                            "shape": [
+                                "33.9273047,-84.3521154",
+                                "33.9272833,-84.3519545",
+                                "33.9272404,-84.3518472",
+                                "33.927176,-84.3517721",
+                                "33.9268863,-84.3515468",
+                                "33.9268005,-84.3516326",
+                                "33.9260709,-84.351579",
+                                "33.9254916,-84.351536"
+                            ],
+                            "shape_quality": "exact",
+                            "start_angle": 85,
+                            "time": "2018-02-22T13:36:22-05:00",
+                            "to_link": "-22725986"
+                        },
+                        {
+                            "duration": 5,
+                            "distance": 26,
+                            "miles": 0.01615565,
+                            "minutes": 0.083333336,
+                            "action": "rightTurn",
+                            "bounding_box": {
+                                "northwest": {
+                                    "latitude": 33.92549,
+                                    "longitude": -84.351814
+                                },
+                                "southeast": {
+                                    "latitude": 33.92549,
+                                    "longitude": -84.35154
+                                }
+                            },
+                            "coordinates": {
+                                "latitude": 33.92549,
+                                "longitude": -84.35154
+                            },
+                            "direction": "right",
+                            "id": "M7",
+                            "instruction": "Turn right. Go for 26 m.",
+                            "length": 26,
+                            "next_maneuver": "M8",
+                            "next_road_name": null,
+                            "notes": null,
+                            "road_name": "Peachtree Dunwoody Rd",
+                            "shape": [
+                                "33.9254916,-84.351536",
+                                "33.9254916,-84.3518141"
+                            ],
+                            "shape_quality": "exact",
+                            "start_angle": 176,
+                            "time": "2018-02-22T13:37:02-05:00",
+                            "to_link": "-1163342281"
+                        },
+                        {
+                            "duration": 0,
+                            "distance": 0,
+                            "miles": 0,
+                            "minutes": 0,
+                            "action": "arrive",
+                            "bounding_box": {
+                                "northwest": {
+                                    "latitude": 33.92549,
+                                    "longitude": -84.351814
+                                },
+                                "southeast": {
+                                    "latitude": 33.92549,
+                                    "longitude": -84.351814
+                                }
+                            },
+                            "coordinates": {
+                                "latitude": 33.92549,
+                                "longitude": -84.351814
+                            },
+                            "direction": "forward",
+                            "id": "M8",
+                            "instruction": "Arrive at your destination.",
+                            "length": 0,
+                            "next_maneuver": null,
+                            "next_road_name": null,
+                            "notes": null,
+                            "road_name": null,
+                            "shape": [
+                                "33.9254916,-84.3518141"
+                            ],
+                            "shape_quality": "exact",
+                            "start_angle": 270,
+                            "time": "2018-02-22T13:37:07-05:00",
+                            "to_link": null
+                        }
+                    ]
+                }
+            ],
+            "waypoints": [
+                {
+                    "label": "Ferry Dr",
+                    "link_id": "+22652565",
+                    "mapped_coordinates": {
+                        "latitude": 33.925358,
+                        "longitude": -84.38571
+                    },
+                    "mapped_road_name": "Ferry Dr",
+                    "original_coordinates": {
+                        "latitude": 33.9253,
+                        "longitude": -84.38574
+                    },
+                    "side_of_street": "right",
+                    "shape_index": 0,
+                    "spot": 0.1704545,
+                    "type": "stopOver"
+                },
+                {
+                    "label": null,
+                    "link_id": "-1163342281",
+                    "mapped_coordinates": {
+                        "latitude": 33.92549,
+                        "longitude": -84.351814
+                    },
+                    "mapped_road_name": null,
+                    "original_coordinates": {
+                        "latitude": 33.92549,
+                        "longitude": -84.351814
+                    },
+                    "side_of_street": "neither",
+                    "shape_index": 73,
+                    "spot": 0.3809524,
+                    "type": "stopOver"
+                }
+            ]
+        }
+    ]
+}'
+    http_version:
+  recorded_at: Wed, 21 Feb 2018 10:37:51 GMT
+recorded_with: VCR 2.9.3

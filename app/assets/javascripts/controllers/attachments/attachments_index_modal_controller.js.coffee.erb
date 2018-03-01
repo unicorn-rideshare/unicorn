@@ -1,0 +1,70 @@
+module = angular.module('unicornApp.controllers')
+
+module.controller 'AttachmentsIndexModalCtrl', ['$scope', '$controller', '$modalInstance', '$modal', 'Attachment', 'attachable', 'attachableUri', 'allowAttachmentDeletion',
+  ($scope, $controller, $modalInstance, $modal, Attachment, attachable, attachableUri, allowAttachmentDeletion) ->
+    $.extend this, $controller('IndexCtrl', { $scope: $scope })
+
+    $scope.collectionClass = Attachment
+    $scope.collectionName = 'attachments'
+
+    $scope.attachable = attachable
+
+    $scope.attachments = []
+
+    $scope.$on 'attachment_changed', (event, attachment) ->
+      return unless attachment.attachable_id == $scope.attachable.id && attachment.attachable_type == attachableUri.substring(0, attachableUri.length - 1)
+      $scope.mergeAttachment(attachment)
+
+    $scope.indexOfAttachment = (attachment) ->
+      index = -1
+      i = -1
+      for a in $scope.attachments
+        i++
+        if a.id == attachment.id
+          index = i
+          break
+      index
+
+    $scope.mergeAttachment = (attachment) ->
+      index = $scope.indexOfAttachment(attachment)
+      if index != -1 then $scope.attachments[index] = attachment else $scope.attachments.unshift(attachment)
+      $scope.$apply() unless $scope.$$phase
+
+    $scope.allowAttachmentDeletion = (attachment) ->
+      type = typeof(allowAttachmentDeletion)
+      return allowAttachmentDeletion(attachment) if type.toLowerCase() == 'function'
+      allowAttachmentDeletion
+
+    $scope.modalInstance = null
+
+    $scope.queryParams = ->
+      { attachable_id: $scope.attachable.id, attachable_type: attachableUri, include_user: true }
+
+    $scope.query()
+
+    $scope.cancel = ->
+      $modalInstance.dismiss()
+
+    $scope.deleteAttachment = (attachment) ->
+      Attachment.delete id: attachment.id, attachable_id: $scope.attachable.id, attachable_type: attachableUri, ->
+        $scope.attachments.splice($scope.attachments.indexOf(attachment), 1)
+
+    $scope.updateTags = (attachment, tags) ->
+      attachment = new Attachment(attachment)
+      attachment.attachable_type = attachment.attachable_type + 's'
+      attachment.tags = tags
+      attachment.$update().then ->
+        $scope.attachments[$scope.indexOfAttachment(attachment)].tags = tags
+
+    $scope.openNewAttachment = ->
+      $scope.modalInstance = $modal.open
+        templateUrl: '<%= asset_path('attachments/new.html') %>'
+        controller: 'NewAttachmentModalCtrl'
+        size: 'lg'
+        resolve:
+          attachable: -> attachable
+          attachableUri: -> attachableUri
+          tags: -> null
+          onAttachmentCreated: -> (attachment) ->
+            $scope.attachments.push(attachment)
+]

@@ -1,0 +1,56 @@
+<% if user_signed_in? %>
+    <li class="dropdown dropdown-user" is-open="accountMenuOpen" ng-controller="AccountMenuCtrl">
+      <a href class="dropdown-toggle account-dropdown-toggle account-menu-toggle" data-toggle="dropdown"data-hover="dropdown">
+        <%= image_tag current_user.profile_image_url || 'profile-photo.png', class: 'menu-profile-photo img-circle' %>
+        <span class="username"><%= current_user.name.split(/ /)[0].strip %></span>
+
+        <span ng-show="companies.length > 1" ng-cloak>
+          (<span class="current-company">{{ currentCompany | contactName }}</span>)
+        </span>
+
+        <i class="fa fa-angle-down"></i>
+      </a>
+
+      <ul class="dropdown-menu" role="menu">
+        <li ng-class="{ disabled: !user }">
+          <a href ng-click="editUser(user)">
+            <span class="glyphicon glyphicon-user"></span>
+            Edit Personal Details
+          </a>
+        </li>
+
+        <li ng-class="{ disabled: !currentCompany }">
+          <a href class="edit-company" disabled="!currentCompany" ng-click="editCompany(currentCompany)">
+            <span class="glyphicon glyphicon-edit"></span>
+            Edit Company Details
+          </a>
+        </li>
+
+        <li ng-class="{ disabled: !currentCompany }">
+          <a href class="edit-billing" disabled="!currentCompany" ng-click="editBilling(currentCompany)">
+            <span class="glyphicon glyphicon-edit"></span>
+            Edit Billing Details
+          </a>
+        </li>
+
+        <li class="divider" ng-show="companies.length > 1"></li>
+        <li class="dropdown-header" ng-show="companies.length > 1">Switch Companies</li>
+        <li class="company" ng-repeat="company in companies | filter: selectableCompany" ng-show="companies.length > 1">
+          <a href class="company-name" role="menuitem" ng-click="selectCompany(company)">
+            <span class="glyphicon glyphicon-briefcase"></span> {{ company.name }}
+          </a>
+        </li>
+        <li>
+          <a href ng-click="newCompany()">
+            <small><span class="glyphicon glyphicon-plus"></span> Add New Company</small>
+          </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <a href ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+        </li>
+      </ul>
+    </li>
+<% else %>
+    <li><a href="/users/login">Login</a></li>
+<% end %>

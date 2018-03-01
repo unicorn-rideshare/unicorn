@@ -1,0 +1,32 @@
+.customers ng-controller="CustomersIndexCtrl"
+  .row
+    .col-md-12
+      h3
+        | Customers
+        a.btn.btn-link href="#/customers/new"
+          i.fa.fa-plus-circle>
+          | New Customer
+  .row
+    .col-md-12
+      spinner
+      zero-state ng-hide="showActivity || customers.length > 0"
+      table.table ng-hide="showActivity || customers.length == 0"
+        tr
+          th ID
+          th Customer Name
+          th Address
+          th Actions
+        tr.customer id="customer_{{customer.id}}" ng-repeat="customer in customers"
+          td.customer-id {{customer.id}}
+          td.customer-name {{customer | contactName}}
+          td.customer-address
+            address
+              | {{ customer.contact.address1 }}
+              br
+              span ng-show="customer.contact.address2"
+                | {{ customer.contact.address2 }}
+                br
+              | {{ customer.contact.city && customer.contact.state && customer.contact.zip ? (customer.contact.city + ', ' + customer.contact.state + ' ' + customer.contact.zip) : '' }}
+          td.customer-actions
+            a ng-href="#/customers/{{customer.id}}/edit" Edit
+      paginate

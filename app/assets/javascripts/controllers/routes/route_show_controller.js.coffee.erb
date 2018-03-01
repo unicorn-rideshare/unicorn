@@ -1,0 +1,146 @@
+module = angular.module('unicornApp.controllers')
+
+module.controller 'RouteShowCtrl', [
+  '$scope', '$filter', '$location', '$routeParams',  '$modal', 'Route', 'WorkOrder', 'preferences', 'companyPreference', 'websocket', 'flashService',
+  ($scope, $filter, $location, $routeParams, $modal, Route, WorkOrder, preferences, companyPreference, websocket, flashService) ->
+
+    $scope.$on 'route_changed', (event, route) ->
+      $scope.mergeRoute(new Route(route))
+
+    $scope.route = Route.get id: $routeParams.id, include_dispatcher_origin_assignment: true, include_provider_origin_assignment: true, include_products: true, include_work_orders: true, ->
+      $scope.showActivity = false
+      $scope.refreshWorkOrders()
+
+    $scope.unresolvedWorkOrderStatuses = ['abandoned', 'awaiting_reschedule']
+    $scope.completedWorkOrderStatuses  = ['completed']
+
+    $scope.workOrders = []
+    $scope.completedWorkOrders = []
+    $scope.pendingWorkOrders = []
+    $scope.unresolvedWorkOrders = []
+
+    $scope.modalInstance = null
+
+    $scope.showActivity = true
+    $scope.showCompleted = false
+
+    $scope.sortableOptions =
+      cancel: ".unsortable",
+      items: "tr:not(.unsortable)",
+      stop: (e, ui) ->
+        array = []
+        angular.forEach(
+          $scope.pendingWorkOrders,
+          ((workOrder) ->
+            this.push(workOrder.id)),
+          array
+        )
+
+        $scope.route.work_order_ids = array
+        $scope.route.$update().then ->
+          $scope.openConversationForProvider($scope.route.provider_origin_assignment.provider)
+
+    $scope.routeBadgeClassName = (route) ->
+      className =
+        awaiting_schedule: 'list-group-item-info'
+        scheduled: 'list-group-item-success'
+        loading: 'list-group-item-success'
+        en_route: 'list-group-item-success'
+        in_progress: 'list-group-item-success'
+        unloading: 'list-group-item-success'
+        pending_completion: 'list-group-item-warning'
+        completed: 'list-group-item-success'
+        canceled: 'list-group-item-warning'
+      className[route.status] if route
+
+    $scope.workOrderRowClassName = (workOrder) ->
+      className =
+        canceled: 'unsortable warning'
+        abandoned: 'unsortable danger'
+        scheduled: 'sortable'
+        awaiting_schedule: 'sortable'
+        en_route: 'unsortable counter green'
+        in_progress: 'sortable counter green'
+        completed: 'unsortable completed-item list-group-item-success'
+      className[workOrder.status]
+
+    $scope.$watch 'showCompleted', ->
+      $scope.refreshCompletedWorkOrders()
+
+    $scope.refreshWorkOrders = ->
+      $scope.workOrders = $scope.route.work_orders
+      $scope.list = $scope.workOrders # change to pendingWorkOrders + unresolvedWorkOrders
+      $scope.refreshCompletedWorkOrders()
+      $scope.refreshPendingWorkOrders()
+      $scope.refreshUnresolvedWorkOrders()
+
+    $scope.refreshPendingWorkOrders = ->
+      $scope.pendingWorkOrders = []
+      for workOrder in $scope.workOrders
+        if ($scope.unresolvedWorkOrderStatuses.indexOf(workOrder.status) == -1) and ($scope.completedWorkOrderStatuses.indexOf(workOrder.status) == -1)
+          $scope.pendingWorkOrders.push(workOrder)
+
+    $scope.refreshUnresolvedWorkOrders = ->
+      $scope.unresolvedWorkOrders = []
+      for workOrder in $scope.workOrders
+        if $scope.unresolvedWorkOrderStatuses.indexOf(workOrder.status) != -1
+          $scope.unresolvedWorkOrders.push(workOrder)
+
+    $scope.refreshCompletedWorkOrders = ->
+      $scope.completedWorkOrders = []
+      if $scope.showCompleted
+        for workOrder in $scope.workOrders
+          if $scope.completedWorkOrderStatuses.indexOf(workOrder.status) != -1
+            $scope.completedWorkOrders.push(workOrder)
+
+    $scope.mergeWorkOrder = (workOrder) ->
+      $scope.$broadcast('updateWorkOrder' + workOrder.id, workOrder)
+
+    $scope.mergeRoute = (route) ->
+      return unless $scope.route && route.id == $scope.route.id
+      $scope.route = route
+      $scope.refreshWorkOrders()
+      $scope.$apply()
+
+    # the following stuff could probably be moved somewhere better than here
+
+    $scope.openAttachments = (attachable) ->
+      $scope.modalInstance = $modal.open
+        templateUrl: '<%= asset_path('attachments.html') %>'
+        controller: 'AttachmentsIndexModalCtrl'
+        size: 'lg'
+        resolve:
+          attachable: -> attachable
+          attachableUri: -> 'work_orders'
+          allowAttachmentDeletion: -> false
+
+    $scope.openComments = (commentable) ->
+      $scope.modalInstance = $modal.open
+        templateUrl: '<%= asset_path('comments.html') %>'
+        controller: 'CommentsIndexModalCtrl'
+        size: 'lg'
+        resolve:
+          commentable: -> commentable
+          commentableUri: -> 'work_orders'
+
+    $scope.openManifest = (workOrder) ->
+      $scope.modalInstance = $modal.open
+        templateUrl: '<%= asset_path('routes/manifest.html') %>'
+        controller: 'RouteManifestModalCtrl'
+        size: 'lg'
+        resolve:
+          route: -> $scope.route
+          workOrder: -> workOrder
+
+    $scope.openMessaging = (workOrder) ->
+      provider = workOrder.work_order_providers[0].provider if workOrder.work_order_providers.length > 0
+      $scope.openConversationForProvider(provider) if provider
+
+    $scope.openConversationForProvider = (provider) ->
+      $scope.$emit('loadConversation', { userId: provider.user_id, name: provider.contact.name })
+      return true
+
+    $scope.completeRoute = (route) ->
+      route.status = 'completed'
+      route.$update()
+]

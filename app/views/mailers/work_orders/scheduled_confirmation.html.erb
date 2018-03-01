@@ -1,0 +1,3 @@
+Hi <%= @work_order.customer.contact.first_name %>!
+
+This is just to confirm your <a href="<%= @short_url %>">appointment</a> scheduled for <%= @work_order.scheduled_start_at.to_s %>.

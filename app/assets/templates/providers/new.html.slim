@@ -1,0 +1,20 @@
+form.provider-form.edit-provider novalidate=true name="form" ng-controller="NewProviderCtrl" ng-submit="submit()"
+  .row
+    .col-md-12
+      h3 New Provider
+  contactable-fields contactable="provider"
+  .row.col-md-8 ng-hide="showActivity || categories.length == 0"
+    .form-group
+      label.control-label Categories
+      .row.provider-group ng-repeat="category in categories"
+        label.checkbox-inline
+          input.category type="checkbox" name="categories" ng-model="providerCategories[category.id]"
+          | {{ category.name }}
+  .row ng-hide="showActivity"
+    .col-md-12
+      button.btn.btn-primary type="submit" ng-disabled="form.$invalid"
+        i.fa.fa-save>
+        | Create Provider
+      a.btn.btn-link href="#/providers"
+        i.fa.fa-close>
+        | Cancel

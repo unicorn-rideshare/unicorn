@@ -1,0 +1,5 @@
+<% content_for :scripts do %>
+    <% if Rails.application.config.recaptcha_site_key && Rails.application.config.recaptcha_secret_key %>
+        <script type="text/javascript" src="//www.google.com/recaptcha/api.js?render=explicit&onload=vcRecaptchaApiLoaded" async defer></script>
+    <% end %>
+<% end %>

@@ -1,0 +1,43 @@
+defaults: &defaults
+  app:
+    name: <%= ENV['APP_NAME'] || 'unicorn' %>
+    default_mailer_from_name: <%= ENV['APP_DEFAULT_MAILER_FROM_NAME'] || ENV['APP_NAME'] || 'unicorn' %>
+    default_mailer_from_address: <%= ENV['APP_DEFAULT_MAILER_FROM_ADDRESS'] || "no-reply@#{URI.parse(ENV['APP_URL'] || "https://#{ENV['APP_NAME'] || 'unicorn'}").host}" %>
+    default_work_order_status: awaiting_schedule
+    notification_types:
+      - attachment_changed
+      - comment_changed
+      - job_changed
+      - route_changed
+      - work_order_changed
+      - work_order_provider_changed
+      - work_order_provider_added
+      - work_order_provider_removed
+    url: <%= ENV['APP_URL'] || 'http://localhost:3000' %>
+    x_frame_options_allow_from: <%= ENV['X_FRAME_OPTIONS_ALLOW_FROM'] || nil %>
+    x_frame_options_sent_only_if_authenticated: <%= ENV['X_FRAME_OPTIONS_SENT_ONLY_IF_AUTHENTICATED'] || true %>
+  aws:
+    default_region: <%= ENV['AWS_REGION'] || 'us-east-1' %>
+    default_s3_bucket: <%= ENV['AWS_DEFAULT_S3_BUCKET'] || "#{ENV['APP_NAME'] || 'unicorn'}-#{Rails.env}" %>
+    notification_queue: <%= ENV['AWS_DEFAULT_SQS_QUEUE'] %>
+  new_relic_license: <%= ENV['NEW_RELIC_LICENSE_KEY'] %>
+  redis:
+    namespace: <%= "#{ENV['APP_NAME'] || 'unicorn'}_#{Rails.env}" %>
+
+development:
+  <<: *defaults
+  redis:
+    url: redis://localhost:6379/0
+    namespace: <%= "#{ENV['APP_NAME'] || 'unicorn'}_#{Rails.env}" %>
+
+test:
+  <<: *defaults
+  redis:
+    url: redis://localhost:6379/1
+    namespace: <%= "#{ENV['APP_NAME'] || 'unicorn'}_#{Rails.env}" %>
+
+production:
+  <<: *defaults
+  redis:
+    url: <%= ENV['REDIS_URL'] %>
+    namespace: <%= "#{ENV['APP_NAME'] || 'unicorn'}_#{Rails.env}" %>

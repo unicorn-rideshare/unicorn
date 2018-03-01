@@ -1,0 +1,13 @@
+form.company-form novalidate=true name="form" ng-submit="save(company)"
+  .modal-header
+    h3.modal-title {{ titleText }}
+  .modal-body
+    contactable-fields contactable="company"
+  .modal-footer
+    .pull-left
+      button.btn.btn-primary type="submit" ng-disabled="form.$invalid"
+        i.fa.fa-save>
+        | {{ submitButtonText }}
+      a.btn.btn-link href="" ng-click="cancel()" type="button"
+        i.fa.fa-close>
+        | Cancel

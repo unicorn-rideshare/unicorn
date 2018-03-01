@@ -1,0 +1,32 @@
+{
+  "name": "unicorn",
+  "version": "0.0.0",
+  "dependencies": {
+    "angular": "1.4.8",
+    "angular-bootstrap": "0.11.0",
+    "angular-bootstrap-datetimepicker": "0.3.13",
+    "angular-resource": "1.5.0-build.4408",
+    "angular-route": "1.4.8",
+    "angular-base64": "~2.0.4",
+    "angular-cookies": "1.4.8",
+    "angular-recaptcha": "2.4.1",
+    "angular-ui-sortable": "0.13.4",
+    "bootstrap-sass": "3.3.4",
+    "font-awesome": "4.3.0",
+    "jquery": "2.1.1",
+    "json-formatter": "0.4.1",
+    "angular-payments": "git@github.com:laurihy/angular-payments.git#9643191f2359e18d543c4abf1581f91f6729445f",
+    "angular-wizard": "0.5.5",
+    "ng.model": "git@github.com:miamarti/ng-model.git#735e43e2aa9e4357be81b243f8a7be55012c57b9",
+    "pickadate": "3.5.3",
+    "underscore": "1.7.0"
+  },
+  "devDependencies": {
+    "angular-mocks": "1.2.19",
+    "jasmine-ajax": "~1.3.1",
+    "jasmine-jquery": "~1.7.0"
+  },
+  "resolutions": {
+    "angular": "1.4.8"
+  }
+}

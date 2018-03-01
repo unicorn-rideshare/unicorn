@@ -1,0 +1,24 @@
+.dispatchers ng-controller="DispatcherOriginAssignmentsIndexCtrl"
+  .row
+    .col-md-12
+      h4
+        | Assigned Dispatchers
+        a.btn.btn-link href="#/markets/{{ marketId }}/origins/{{ origin.id }}/dispatcher_origin_assignments/new"
+          i.fa.fa-plus-circle>
+          | New Dispatcher Assignment
+      spinner
+      zero-state ng-hide="showActivity || dispatcherOriginAssignments.length > 0"
+      table.table ng-hide="showActivity || dispatcherOriginAssignments.length == 0"
+        tr
+          th ID
+          th Dispatcher
+          th Effective Dates
+          th Actions
+        tr.dispatcher-origin-assignment id="dispatcher_origin_assignments_{{ origin.id }}" ng-repeat="dispatcherOriginAssignment in dispatcherOriginAssignments"
+          td.dispatcher-origin-assignment-id {{ dispatcherOriginAssignment.id }}
+          td.dispatcher-origin-assignment-dispatcher {{ dispatcherOriginAssignment.dispatcher.contact.name }}
+          td.dispatcher-origin-assignment-effective-dates {{ dispatcherOriginAssignment.start_date ? (dispatcherOriginAssignment.start_date + ' - ' + (dispatcherOriginAssignment.end_date ? dispatcherOriginAssignment.end_date : 'Indefinite')) : 'Indefinite' }}
+          td.dispatcher-origin-assignment-actions
+            a ng-href="#/markets/{{ marketId }}/origins/{{ origin.id }}/dispatcher_origin_assignments/{{ dispatcherOriginAssignment.id }}/edit" Edit
+            br
+            a.btn-link ng-click="cancelDispatcherOriginAssignment(dispatcherOriginAssignment)" Cancel

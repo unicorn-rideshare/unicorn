@@ -1,0 +1,81 @@
+module = angular.module('unicornApp.services')
+
+module.factory 'websocket', ['$window',
+  ($window) ->
+    dispatcherKey = 'websocketDispatcher'
+    channelsKey = 'websocketChannels'
+    channelBindingsKey = 'websocketChannelBindings'
+
+    dispatcher = undefined
+    channels = undefined
+    channelBindings = undefined
+
+    getObject = (key) ->
+      $window['websocket_' + key]
+
+    setObject = (key, value) ->
+      $window['websocket_' + key] = value
+
+    getDispatcher = ->
+      dispatcher ||= getObject(dispatcherKey)
+      return dispatcher if dispatcher
+      dispatcher = new WebSocketRails('<%= Settings.app.url.match(/:\/\/(.*)/i)[1] %>/websocket')
+      setObject(dispatcherKey, dispatcher)
+      dispatcher
+
+    getChannels = ->
+      getObject(channelsKey) || {}
+
+    getChannelSubscription = (channel) ->
+      channels ||= getChannels()
+      channels[channel] ||= getDispatcher().subscribe_private(channel)
+      setObject(channelsKey, channels)
+      channels[channel]
+
+    getChannelBindings = (channel) ->
+      channelBindings ||= getObject(channelBindingsKey) || {}
+      channelBindings[channel] ||= []
+
+    unsubscribe = (channel) ->
+      channels ||= getChannels()
+      getDispatcher().unsubscribe(channel)
+      delete channels[channel]
+      setObject(channelsKey, channels)
+      getChannelBindings(channel)
+      delete channelBindings[channel]
+      setObject(channelBindingsKey, channelBindings)
+
+    unbind = (channel, event) ->
+      bindings = getChannelBindings(channel)
+      if bindings && bindings.indexOf(event) != -1
+        channels = getChannels()
+        if channels[channel]
+          channels[channel].unbind(event) if channels[channel].unbind
+          bindings.splice(bindings.indexOf(event), 1)
+          channelBindings[channel] = bindings
+          setObject(channelBindingsKey, channelBindings)
+          if bindings.length == 0
+            unsubscribe(channel)
+
+    disconnect = ->
+      getDispatcher().disconnect()
+
+    unbindContext: ->
+      for channel of getChannels()
+        while getChannelBindings(channel).length > 0
+          event = getChannelBindings(channel)[0]
+          unbind(channel, event)
+
+    bind: (channel, event, callback) ->
+      if getChannelSubscription(channel).bind(event, callback)
+        bindings = getChannelBindings(channel)
+        bindings.push(event) if bindings.indexOf(event) == -1
+        channelBindings[channel] = bindings
+        setObject(channelBindingsKey, channelBindings)
+
+    unbind: (channel, event) ->
+      unbind(channel, event)
+
+    dispatch: (method, params) ->
+      getDispatcher().dispatch(method, params)
+]

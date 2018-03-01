@@ -1,0 +1,17 @@
+module = angular.module('unicornApp.controllers')
+
+module.controller 'EditCategoryCtrl', ['$scope', '$location', '$routeParams', 'Category', 'flashService',
+ ($scope, $location, $routeParams, Category, flashService) ->
+
+   $scope.showActivity = true
+
+   category = Category.get id: $routeParams.id, ->
+     $scope.category = category
+     $scope.showActivity = false
+
+   $scope.submit = ->
+     promise = $scope.category.$update()
+     promise.then ->
+       flashService.success('Category was successfully updated')
+       $location.path('/categories')
+]

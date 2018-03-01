@@ -1,0 +1,24 @@
+.providers ng-controller="ProviderOriginAssignmentsIndexCtrl"
+  .row
+    .col-md-12
+      h4
+        | Assigned Providers
+        a.btn.btn-link href="#/markets/{{ marketId }}/origins/{{ origin.id }}/provider_origin_assignments/new"
+          i.fa.fa-plus-circle>
+          | New Provider Assignment
+      spinner
+      zero-state ng-hide="showActivity || providerOriginAssignments.length > 0"
+      table.table ng-hide="showActivity || providerOriginAssignments.length == 0"
+        tr
+          th ID
+          th Provider
+          th Effective Dates
+          th Actions
+        tr.provider-origin-assignment id="provider_origin_assignments_{{ origin.id }}" ng-repeat="providerOriginAssignment in providerOriginAssignments"
+          td.provider-origin-assignment-id {{ providerOriginAssignment.id }}
+          td.provider-origin-assignment-provider {{ providerOriginAssignment.provider.contact.name }}
+          td.provider-origin-assignment-effective-dates {{ providerOriginAssignment.start_date ? (providerOriginAssignment.start_date + ' - ' + (providerOriginAssignment.end_date ? providerOriginAssignment.end_date : 'Indefinite')) : 'Indefinite' }}
+          td.provider-origin-assignment-actions
+            a ng-href="#/markets/{{ marketId }}/origins/{{ origin.id }}/provider_origin_assignments/{{ providerOriginAssignment.id }}/edit" Edit
+            br
+            a.btn-link ng-click="cancelProviderOriginAssignment(providerOriginAssignment)" Cancel

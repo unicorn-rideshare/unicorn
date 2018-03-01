@@ -1,0 +1,19 @@
+default: &default
+  adapter: <%= ENV['DATABASE_ADAPTER'] || 'postgis' %>
+  encoding: <%= ENV['DATABASE_ENCODING'] || 'unicode' %>
+  host: <%= ENV['DATABASE_HOST'] || 'localhost' %>
+  port: <%= ENV['DATABASE_PORT'] || '5432' %>
+  database: <%= ENV['DATABASE_NAME'] || "#{Rails.application.class.parent_name.underscore}_#{Rails.env}" %>
+  username: <%= ENV['DATABASE_USERNAME'] || 'root' %>
+  password: <%= ENV['DATABASE_PASSWORD'] || '' %>
+  pool: <%= ENV['DATABASE_POOL'].nil? ? '5' : ENV['DATABASE_POOL'].to_s %>
+  timeout: <%= ENV['DATABASE_TIMEOUT'].nil? ? '10000' : ENV['DATABASE_TIMEOUT'].to_s %>
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default

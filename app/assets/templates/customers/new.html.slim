@@ -1,0 +1,14 @@
+form.customer-form.edit-customer novalidate=true name="form" ng-controller="NewCustomerCtrl" ng-submit="submit()"
+  .row
+    .col-md-12
+      h3 New Customer
+  / TODO: Use include plugin after next slim release: https://github.com/slim-template/slim/issues/469
+  contactable-fields contactable="customer"
+  .row
+    .col-md-12
+      button.btn.btn-primary type="submit" ng-disabled="form.$invalid"
+        i.fa.fa-save>
+        | Create Customer
+      a.btn.btn-link href=""
+        i.fa.fa-close>
+        | Cancel

@@ -1,0 +1,41 @@
+form.route-form.edit-route novalidate=true name="form" ng-controller="NewRouteCtrl" ng-submit="submit()"
+  .row
+    .col-md-12
+      h3 New Route
+  .row
+    .col-md-2.pull-left
+      label.control-label.required Date
+      div.input-group.dashboard-date-filter
+        input.form-control type="text" datepicker-popup="MMMM dd, yyyy" ng-model="date" is-open="datePickerOpen" close-text="Close"
+        span.input-group-btn
+          button.btn.btn-default type="button" ng-click="openDatePicker('datePickerOpen', $event)"
+            i.fa.fa-calendar
+  .row
+    .form-group.col-sm-2
+      label.control-label.required Market
+      div.input-group
+        select.form-control required="true" ng-model="marketId" ng-options="market.id as market.name for market in markets"
+          option value="" --
+    .form-group.col-sm-2
+      label.control-label.required Origin
+      div.input-group
+        select.form-control required="true" ng-model="originId" ng-options="origin.id as origin.contact.name for origin in origins"
+          option value="" --
+    .form-group.col-sm-2
+      label.control-label Dispatcher
+      div.input-group
+        select.form-control ng-model="dispatcherOriginAssignmentId" ng-options="dispatcherOriginAssignment.id as dispatcherOriginAssignment.dispatcher.contact.name for dispatcherOriginAssignment in dispatcherOriginAssignments"
+          option value="" --
+    .form-group.col-sm-2
+      label.control-label.required Provider
+      div.input-group
+        select.form-control required="true" ng-model="providerOriginAssignmentId" ng-options="providerOriginAssignment.id as providerOriginAssignment.provider.contact.name for providerOriginAssignment in providerOriginAssignments"
+          option value="" --
+  .row
+    .col-md-12
+      button.btn.btn-primary type="submit" ng-disabled="form.$invalid"
+        i.fa.fa-save>
+        | Create Route
+      a.btn.btn-link ng-href="#/routes"
+        i.fa.fa-close>
+        | Cancel

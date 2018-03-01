@@ -1,0 +1,18 @@
+.chat-container ng-controller="MessagesConversationCtrl"
+  .chat-box.chat-popup ng-show="visible"
+    .chat-head
+      .chat-head-left
+        span.fa.fa-user
+        | {{ conversation.sender_name }}
+      .chat-head-right
+        button.btn.btn-default.fa.fa-close ng-click="close()"
+      .clear
+    spinner
+    ul.chat-messages ng-hide="messages.length == 0"
+      .message-container ng-repeat="message in messages"
+        .message.green
+          span {{ message.body }}
+        .message-details
+          span.user {{ message.sender_name }}
+          span.time {{ message.created_at | date: 'EEE. M/dd, h:mm a' }}
+    chat-fields send-action="sendMessage" placeholder="Your Message..."

@@ -1,0 +1,72 @@
+.customers ng-controller="RoutesIndexCtrl"
+  .row
+    .col-md-12
+      h3
+        | Routes
+        a.btn.btn-link href="#/routes/new"
+          i.fa.fa-plus-circle>
+          | New Route
+  .row
+    .col-md-9
+      spinner
+      zero-state ng-hide="showActivity || routes.length > 0"
+      table.table ng-hide="showActivity || routes.length == 0"
+        tr
+          th ID
+          th Name
+          th Status
+          th Actions
+        tr.route id="route_{{ route.id }}" ng-repeat="route in routes"
+          td.route-id {{ route.id }}
+          td.route-name {{ route.name || '(unnamed route)' }}
+          td.route-status {{ route.status }}
+          td.route-actions
+            a ng-href="#/routes/{{ route.id }}/edit" Edit
+      paginate
+    .col-md-3
+      .panel.panel-default
+        .panel-heading
+          h3.panel-title Filter Routes
+        .panel-body
+          form.filter-form.work-orders-filter
+            .form-group
+              label.control-label By status
+              .input-group.checkbox-group
+                label.checkbox
+                  input type="checkbox" name="awaiting_schedule" ng-model="filter.status.awaiting_schedule"
+                  | Awaiting schedule
+                label.checkbox
+                  input type="checkbox" name="scheduled" ng-model="filter.status.scheduled"
+                  | Scheduled
+                label.checkbox
+                  input type="checkbox" name="loading" ng-model="filter.status.loading"
+                  | Loading
+                label.checkbox
+                  input type="checkbox" name="in_progress" ng-model="filter.status.in_progress"
+                  | In progress
+                label.checkbox
+                  input type="checkbox" name="unloading" ng-model="filter.status.unloading"
+                  | Unloading
+                label.checkbox
+                  input type="checkbox" name="pending_completion" ng-model="filter.status.pending_completion"
+                  | Pending Completion
+                label.checkbox
+                  input type="checkbox" name="completed" ng-model="filter.status.completed"
+                  | Completed
+                label.checkbox
+                  input type="checkbox" name="canceled" ng-model="filter.status.canceled"
+                  | Canceled
+            .form-group
+              label.control-label On or After
+              .input-group.on-or-after
+                input.form-control.on-or-after type="text" ng-model="filter.onOrAfter" datepicker-popup="yyyy-MM-dd" is-open="onOrAfterOpened" datepicker-options="{showWeeks: false}"
+                span.input-group-btn
+                  button.btn.btn-default type="button" ng-click="toggle($event, 'onOrAfterOpened')"
+                    i.fa.fa-calendar
+            .form-group
+              label.control-label On or Before
+              .input-group.on-or-before
+                input.form-control.on-or-before type="text" ng-model="filter.onOrBefore" datepicker-popup="yyyy-MM-dd" is-open="onOrBeforeOpened" datepicker-options="{showWeeks: false}"
+                span.input-group-btn
+                  button.btn.btn-default type="button" ng-click="toggle($event, 'onOrBeforeOpened')"
+                    i.fa.fa-calendar

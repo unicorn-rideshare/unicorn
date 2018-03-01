@@ -1,0 +1,241 @@
+module = angular.module('unicornApp.directives', ['unicornApp.values'])
+
+module.directive 'usStateSelect', ['USStates',
+  (USStates) ->
+    replace: true,
+    restrict: 'E',
+    scope:
+      placeholder: '@'
+    # coffeelint: disable=max_line_length
+    template: '<select ng-options="option.value as option.display for option in options"><option value="">{{placeholder || "--"}}</option></select>'
+    # coffeelint: enable=max_line_length
+    link: (scope, element, attrs) -> scope.options = USStates
+]
+
+module.directive 'timeZoneSelect', ['TimeZones',
+  (TimeZones) ->
+    replace: true,
+    restrict: 'E',
+    scope:
+      placeholder: '@'
+    # coffeelint: disable=max_line_length
+    template: '<select ng-options="option.value as option.display for option in options"><option value="">{{placeholder || "--"}}</option></select>'
+    # coffeelint: enable=max_line_length
+    link: (scope, element, attrs) -> scope.options = TimeZones
+]
+
+module.directive 'contactableFields', ->
+  replace: true
+  restrict: 'E'
+  templateUrl: '<%= asset_path('contactable-fields.html') %>'
+  scope:
+    contactable: '='
+
+module.directive 'chatFields', ->
+  restrict: 'E'
+  scope:
+    placeholder: '@'
+    sendAction: '&'
+  templateUrl: '<%= asset_path('chat-fields.html') %>'
+  link: (scope, element, attrs) ->
+    element.bind 'submit', (e) ->
+      messageInput = element.find('input[name=message]')
+      message = messageInput.val()
+      messageInput.val('')
+      scope.$apply(scope.sendAction)(message)
+      return false
+
+module.directive 'captchaInput', ->
+  restrict: 'E'
+  template: '<div class="g-recaptcha row" ng-hide="!pendingCaptcha" vc-recaptcha theme="\'light\'" key="model.recaptchaSiteKey" on-create="recaptchaCreated(widgetId)" on-success="recaptchaSucceeded(response)" on-expire="recaptchaExpired()"></div>'
+
+module.directive 'dropzone', ->
+    restrict: 'A'
+    link: (scope, element, attrs) ->
+        # function to prevent default behavior (browser loading image)
+        processDragOverOrEnter = (event) ->
+            event?.stopPropagation()
+            event?.preventDefault()
+            event.originalEvent.dataTransfer.effectAllowed = 'copy'
+            false
+
+        # for dragover and dragenter (IE) we stop the browser from handling the
+        # event and specify copy as the allowable effect
+        element.bind 'dragover', processDragOverOrEnter
+        element.bind 'dragenter', processDragOverOrEnter
+
+        # on drop events we stop browser and read the dropped file via the FileReader
+        # the resulting droped file is bound to the image property of the scope of this directive
+        element.bind 'drop', (event) ->
+            event?.stopPropagation()
+            event?.preventDefault()
+
+            file = event.originalEvent.dataTransfer.files[0]
+            scope.$apply ->
+                scope.setFile(file)
+            return true
+
+module.directive 'mapCanvas', ->
+  restrict: 'E'
+  templateUrl: '<%= asset_path('map-canvas.html') %>'
+  link: (scope, element, attrs) ->
+    centerLatitude = Number(attrs.centerCoordinate.split(',')[0])
+    centerLongitude = Number(attrs.centerCoordinate.split(',')[1])
+    scope.centerLatLng = new google.maps.LatLng(centerLatitude, centerLongitude)
+    scope.elementId = attrs.elementId
+
+module.directive 'spinner', ->
+  restrict: 'E'
+  template: '<div class="spinner" ng-hide="!showActivity"><i class="fa fa-refresh fa-spin" /></div>'
+
+module.directive 'scopeSpinner', ->
+  restrict: 'E'
+  template: '<i class="fa fa-refresh fa-spin" ng-hide="!showScopeSpinnerActivity" />'
+
+module.directive 'paginate', ->
+  restrict: 'E'
+  templateUrl: '<%= asset_path('pagination.html') %>'
+
+module.directive 'zeroState', ->
+    restrict: 'E'
+    templateUrl: '<%= asset_path('zero-state.html') %>'
+    scope:
+      message: '@'
+
+module.directive 'searchQuery', ->
+    replace: true
+    restrict: 'E'
+    transclude: true
+    scope: true
+    templateUrl: '<%= asset_path('search-results.html') %>'
+    link: (scope, element, attrs) ->
+      scope.collectionClass = attrs.collectionClass
+      scope.resultTitleKey = attrs.resultTitleKey
+      scope.placeholder = attrs.placeholder
+      scope.hideDefaultSearchResults = if attrs.hideDefaultSearchResults then attrs.hideDefaultSearchResults.toLowerCase() == "true"
+      scope.onResultsReceivedMessage = attrs.onResultsReceivedMessage
+      scope.onResultSelectedMessage = attrs.onResultSelectedMessage
+      scope.onQueryChangedMessage = attrs.onQueryChangedMessage
+      scope.updateQueryInputPlaceholderMessage = attrs.updateQueryInputPlaceholderMessage
+      scope.updateQueryInputMessage = attrs.updateQueryInputMessage
+      scope.disabled = attrs.disabled
+      scope.queryParams = ->
+        params = JSON.parse(attrs.queryParams)
+        exp = /(\_\w)/g
+        camelCase = (matches) ->
+          return false unless matches && matches.length > 0
+          matches[1].toUpperCase()
+        for k, v of params
+          params[k] = attrs[k.replace(exp, camelCase)] unless v
+        params.q = scope.queryString
+        params
+
+module.directive 'messagePreview', -> # the view for a message as it should be shown in menus
+    replace: true
+    restrict: 'A'
+    transclude: true
+    templateUrl: '<%= asset_path('messages/preview.html') %>'
+    link: (scope, element, attrs) ->
+      words = scope.message.body.split(' ')
+      preview = ''
+      while preview.length < 61
+        nextWord = words.shift()
+        return unless nextWord
+        preview += nextWord + ' '
+        scope.message.preview = preview.substring(0, preview.length - 1)
+        scope.message.preview += '...' if preview.length >= 61
+
+module.directive 'conversation', -> # the view for a conversation between one or more parties
+    replace: true
+    restrict: 'E'
+    transclude: true
+    scope: true
+    templateUrl: '<%= asset_path('messages/conversation.html') %>'
+    link: (scope, element, attrs) ->
+      loadConversation = (conversation) ->
+        isQueryString = typeof(conversation) == 'string'
+        scope.conversation = conversation unless isQueryString
+        scope.senderIdQuery = conversation if !scope.conversation && isQueryString
+        scope.visible = true
+
+      appendMessageToConversation = (message) ->
+        if scope.conversation
+          scope.messages.push(message)
+        else
+          scope.conversation = message
+        scope.visible = true
+
+      qualifier = if attrs.senderId > attrs.recipientId then (attrs.recipientId + '_' + attrs.senderId) else (attrs.senderId + '_' + attrs.recipientId)
+      loadConversationOn = 'loadConversation' + qualifier
+      appendMessageOn = 'appendMessageToConversation' + qualifier
+
+      scope.$on loadConversationOn, (event, conversation) ->
+        loadConversation(conversation)
+
+      scope.$on appendMessageOn, (event, message) ->
+        appendMessageToConversation(message)
+
+      scope.$on 'scrollConversationToNewest' + qualifier, (event) ->
+        messages = element.find('ul')[0]
+        scroll = -> messages.scrollTop = messages.scrollHeight
+        setTimeout(scroll, 25)
+
+
+module.directive 'jobMapCanvas', ->
+    restrict: 'E'
+    templateUrl: '<%= asset_path('jobs/map-canvas.html') %>'
+    link: (scope, element, attrs) ->
+      scope.elementId = attrs.elementId
+      idParts = attrs.elementId.split('_')
+      jobId = idParts[idParts.length - 1]
+      scope.$on 'updateJob' + jobId, (event, route) ->
+        scope.$apply ->
+          scope.job = job
+
+module.directive 'routeMapCanvas', ->
+    restrict: 'E'
+    templateUrl: '<%= asset_path('routes/map-canvas.html') %>'
+    link: (scope, element, attrs) ->
+      scope.elementId = attrs.elementId
+      idParts = attrs.elementId.split('_')
+      routeId = idParts[idParts.length - 1]
+      scope.$on 'updateRoute' + routeId, (event, route) ->
+        scope.$apply ->
+          scope.route = route
+
+module.directive 'workOrderMapCanvas', ->
+    restrict: 'E'
+    templateUrl: '<%= asset_path('work_orders/map-canvas.html') %>'
+    link: (scope, element, attrs) ->
+      scope.elementId = attrs.elementId
+      scope.workOrder = JSON.parse(attrs.workOrder)
+      idParts = attrs.elementId.split('_')
+      workOrderId = idParts[idParts.length - 1]
+      scope.$on 'updateWorkOrder' + workOrderId, (event, workOrder) ->
+        scope.$apply ->
+          scope.workOrder = workOrder
+
+module.directive 'workOrderRow', ->
+    replace: true
+    restrict: 'A'
+    transclude: true
+    scope: true
+    templateUrl: '<%= asset_path('work_orders/show_in_index.html') %>'
+    link: (scope, element, attrs) ->
+      idParts = attrs.id.split('_')
+      workOrderId = idParts[idParts.length - 1]
+      scope.$on 'updateWorkOrder' + workOrderId, (event, workOrder) ->
+        scope.$apply ->
+          scope.workOrder = workOrder
+
+module.directive 'dispatcherOriginAssignments', ->
+    restrict: 'E'
+    templateUrl: '<%= asset_path('dispatcher_origin_assignments.html') %>'
+    link: (scope, element, attrs) ->
+      scope.status = attrs.status
+
+module.directive 'providerOriginAssignments', ->
+    restrict: 'E'
+    templateUrl: '<%= asset_path('provider_origin_assignments.html') %>'
+    link: (scope, element, attrs) ->
+      scope.status = attrs.status

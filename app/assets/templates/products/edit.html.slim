@@ -1,0 +1,50 @@
+form.product-form.edit-product novalidate=true name="form" ng-controller="EditProductCtrl" ng-submit="submit()"
+  .row
+    .col-md-12
+      h3 Edit Product
+  spinner
+  .row.col-md-8.pull-left ng-hide="showActivity"
+    .row ng-hide="showActivity"
+      .form-group.col-md-6
+        label.control-label.required Name
+        input.form-control.name name="name" type="text" required="true" ng-model="product.data.name"
+      .form-group.col-md-6
+        label.control-label.required GTIN (e.g. UPC-12, EAN/UCC-13, EAN/UCC-8, etc.)
+        input.form-control.name name="gtin" type="text" required="true" ng-model="product.gtin"
+    .row ng-hide="showActivity"
+      .form-group.col-md-6
+        label.control-label Tier
+        input.form-control.name name="tier" type="text" ng-model="product.tier"
+      .form-group.col-md-6
+        label.control-label Style
+        input.form-control.name name="style" type="text" ng-model="product.data.style"
+    .row ng-hide="showActivity"
+      .form-group.col-md-6
+        label.control-label Size
+        input.form-control.name name="size" type="text" ng-model="product.data.size"
+      .form-group.col-md-6
+        label.control-label Color
+        input.form-control.name name="color" type="text" ng-model="product.data.color"
+    .row ng-hide="showActivity"
+      .form-group.col-md-6
+        label.control-label Price
+        input.form-control.name name="price" type="text" ng-model="product.data.price"
+      .form-group.col-md-6
+        label.control-label Unit of Measure
+        input.form-control.name name="unit_of_measure" type="text" ng-model="product.data.unit_of_measure"
+  .row.col-md-4.pull-right ng-hide="showActivity"
+    h3
+      a.btn.btn-link ng-href="#/products/{{product.id}}/variant"
+        i.fa.fa-plus-circle>
+        | Add Variant
+    .row.col-md-15 ng-repeat="variant in product.variants"
+      a ng-href="#/products/{{variant.id}}/edit"
+        | {{ variant.data.name }} {{ variant.data.color }} {{ variant.data.style }} {{ variant.data.size }}
+  .row ng-hide="showActivity"
+    .col-md-12
+      button.btn.btn-primary type="submit" ng-disabled="form.$invalid"
+        i.fa.fa-save>
+        | Update Product
+      a.btn.btn-link ng-href="#/products"
+        i.fa.fa-close>
+        | Cancel

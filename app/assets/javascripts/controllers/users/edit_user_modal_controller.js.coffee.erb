@@ -1,0 +1,25 @@
+module = angular.module('unicornApp.controllers')
+
+module.controller 'EditUserModalCtrl', ['$scope', '$modal', '$modalInstance', 'user',
+  ($scope, $modal, $modalInstance, user) ->
+
+    $scope.defaultProfileImageUrl = '<%= asset_path('profile-photo.png') %>'
+    $scope.user = user
+
+    $scope.save = (user) ->
+      operation = if user.id then '$update' else '$save'
+      user[operation]().then -> $modalInstance.close()
+
+    $scope.openAttachments = ->
+      $scope.modalInstance = $modal.open
+        templateUrl: '<%= asset_path('attachments.html') %>'
+        controller: 'AttachmentsIndexModalCtrl'
+        size: 'lg'
+        resolve:
+          attachable: -> user
+          attachableUri: -> 'users'
+          allowAttachmentDeletion: -> true
+
+    $scope.cancel = ->
+      $modalInstance.dismiss()
+]

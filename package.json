@@ -1,0 +1,15 @@
+{
+  "name": "unicorn",
+  "author": "Provide Technologies Inc.",
+  "version": "0.0.1",
+  "private": true,
+  "description": "node dependencies",
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "scripts": {},
+  "dependencies": {
+    "aws-sdk": "2.3.11",
+    "gm": "1.22.0"
+  }
+}

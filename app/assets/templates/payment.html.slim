@@ -1,0 +1,54 @@
+form stripe-form="handleStripe"
+  .modal-header
+    h3.modal-title {{ title }}
+  .modal-body
+    spinner
+    div.existing-payment-method ng-hide="!hasExistingPaymentMethod"
+      .row
+        .form-group.col-md-12
+          label.control-label Credit Card on File
+          div
+            i.fa.fa-credit-card
+            span.existing-card-details
+              strong
+                | {{ existingCardType }}&nbsp;
+              | ending in&nbsp;
+              strong
+                | {{ existingCardLastFour }}&nbsp;
+              | Expiration:&nbsp;
+              strong
+                | {{ existingCardExpiration }}
+    hr.narrow ng-hide="!hasExistingPaymentMethod"
+    div.existing-subscriptions ng-show="!showActivity && subscriptionPlans && subscriptionPlans.length > 0"
+      .row
+        .col-md-7
+          .form-group
+            label.control-label Subscription
+            select#subscription-plan-id.form-control.subscription name="subscriptionPlanId" ng-model="subscriptionPlanId" ng-options="plan.value as plan.display for plan in subscriptionPlans" ng-required="requireSubscription"
+              option value=""  --Select Subscription--
+            span.help-block ng-show="!hasExistingSubscription" You will be billed immediately.
+        .col-md-4 ng-show="supportsCouponCodes"
+          .form-group
+            label.control-label Promo Code
+            input#coupon-code.form-control.subscription name="couponCode" ng-model="couponCode"
+    hr.narrow ng-show="!showActivity && subscriptionPlans && subscriptionPlans.length > 0"
+    div.payment-container ng-hide="showActivity"
+      .row
+        .form-group.col-md-12
+          label.control-label Credit Card Number
+          input.form-control type="text" ng-model="number" payments-format="card"
+      .row
+        .form-group.col-md-8
+          label.control-label Expiration
+          input.form-control type="text" ng-model="expiry" payments-format="expiry" placeholder="MM/YYYY"
+        .form-group.col-md-4
+          label.control-label CVV
+          input.form-control type="text" ng-model="cvc" payments-format="cvc"
+  .modal-footer
+    .pull-left ng-hide="showActivity"
+      button.btn.btn-success type="submit" ng-disabled="form.$invalid"
+        i.fa.fa-save>
+        | {{ submitButtonText }}
+      a.btn.btn-link ng-click="cancel()"
+        i.fa.fa-close>
+        | Cancel

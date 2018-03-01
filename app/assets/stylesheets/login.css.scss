@@ -1,0 +1,185 @@
+//= require bootstrap-sass
+//= require font-awesome/css/font-awesome
+
+@font-face {
+  font-family: 'FontAwesome';
+  src: font-url('font-awesome/fonts/fontawesome-webfont.eot');
+  src: font-url('font-awesome/fonts/fontawesome-webfont.eot') format('embedded-opentype'), font-url('font-awesome/fonts/fontawesome-webfont.woff2?v=4.3.0') format('woff2'), font-url('font-awesome/fonts/fontawesome-webfont.woff?v=4.3.0') format('woff'), font-url('font-awesome/fonts/fontawesome-webfont.ttf') format('truetype'), font-url('font-awesome/fonts/fontawesome-webfont.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: font-url('bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.eot');
+  src: font-url('bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), font-url('bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.woff2') format('woff2'), font-url('bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.woff') format('woff'), font-url('bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.ttf') format('truetype'), font-url('bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.svg') format('svg');
+}
+
+html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+}
+
+.unauthenticated-page {
+  background: #ffffff;
+  background-size: cover;
+
+  header {
+    display: none;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus,
+  button:focus {
+    outline: none;
+  }
+
+  .login-logo {
+    width: 60px;
+    margin: 0 auto;
+    margin-top: 125px;
+  }
+
+  .login-logo img {
+    width: 60px;
+  }
+
+  .login-box {
+    border-radius: 3px;
+    background-color: #fff;
+    margin: 0 auto;
+    margin-top: 25px;
+    width: 320px;
+    overflow: hidden;
+    border: 1px solid #323a45;
+  }
+
+  .login-box-title {
+    background-color: #ffffff;
+    padding: 15px 25px;
+    font-size: 18px;
+    color: #fff;
+    font-weight: 300;
+    position: relative;
+  }
+
+  .login-box-title span {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
+  }
+
+  .login-box-title:before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+    opacity: 0.2;
+    z-index: -1;
+  }
+
+  .login-box-title.green {
+    background-color: #a5c562;
+    padding-bottom: 13px;
+  }
+
+  .login-box-title.red {
+    background-color: #ff503f;
+    padding-bottom: 13px;
+  }
+
+  .login-box-title.gray {
+    background-color: #252b33;
+    padding-bottom: 13px;
+  }
+
+  .login-box-title.light-blue {
+    background-color: #91dff3;
+    padding-bottom: 13px;
+  }
+
+  .login-box-title.yellow {
+    background-color: #fdc554;
+    padding-bottom: 13px;
+  }
+
+  .login-box-title.orange {
+    background-color: #ff503f;
+    padding-bottom: 13px;
+  }
+
+  .login-box-title.purple {
+    background-color: #8175c7;
+    padding-bottom: 13px;
+  }
+
+  .login-box-title.teal {
+    position: relative;
+
+    background-color: #323a45;
+    background-image: image-url('login-hdr.png');
+    padding-bottom: 13px;
+  }
+
+  .login-box-content {
+    padding: 20px;
+  }
+
+  .login-box-content label {
+    padding: 10px;
+    color: #252b33;
+  }
+
+  .login-box-content input {
+    margin-bottom: 15px;
+    width: 100%;
+    border: 0px;
+    border-bottom: 2px solid #e1e5e6;
+    padding: 5px 10px;
+    box-sizing: padding-box;
+    border-radius: 3px;
+  }
+
+  .login-box-content input:focus {
+    border-bottom-color: rgba(131, 191, 203, 1);
+  }
+
+  .login-box-content input[type="submit"] {
+    background-color: #323a45;
+    padding: 14px 10px;
+    box-sizing: padding-box;
+    color: #fff;
+    border-bottom: 0px !important;
+  }
+
+  .login-box-content .half {
+    width: 49%;
+    display: inline-block;
+    font-size: 12px;
+  }
+
+  .login-box-content .half.last {
+    text-align: right;
+  }
+
+  .spinner {
+    margin: 5px 0px 15px;
+    text-align: center;
+  }
+
+  .g-recaptcha {
+    transform:scale(0.90);
+    padding: 20px;
+  }
+}

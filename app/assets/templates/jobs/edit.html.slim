@@ -1,0 +1,67 @@
+form.job-form.edit-job novalidate=true name="form" ng-controller="EditJobCtrl" ng-submit="submit()"
+  .row
+    .col-md-12
+      h3 Edit Job
+  spinner
+  .row.col-md-8 ng-hide="showActivity"
+    .form-group
+      label.control-label.required Name
+      input.form-control.name name="name" type="text" required="true" ng-model="job.name"
+    .form-group
+      label.control-label Customer
+      input.form-control type="text" disabled="disabled" value="{{ job.customer | contactName }}"
+    .form-group
+      label.control-label Supervisors
+      .row.provider-group ng-repeat="provider in providers"
+        label.checkbox-inline
+          input.provider type="checkbox" name="supervisors" ng-model="supervisors[provider.id]" ng-disabled="['pending_completion', 'completed', 'canceled'].indexOf(job.status) > -1"
+          | {{ provider.contact.name }}
+  .col-md-4.pull-right.job-actions ng-hide="showActivity"
+    .form-group
+      a ng-click="addBlueprint(job)" Add Blueprint
+      br
+      a ng-click="openAttachments(job)" Attachments
+      br
+      a ng-click="openComments(job)" Comments
+    label.control-label Need to make a change?
+    .panel.panel-info ng-hide="!isCancellable" ng-init="cancelCollapsed = true"
+      .panel-heading ng-click="cancelCollapsed = !cancelCollapsed"
+        a.cancel href=""
+          span.glyphicon ng-class="{'glyphicon-expand': cancelCollapsed, 'glyphicon-collapse-down': !cancelCollapsed}"
+          | Cancel this job
+      .panel-body ng-hide="cancelCollapsed"
+        p.text-center
+          strong Are you sure you want to cancel this job?
+        p.text-center Cancelling a job is permanent and cannot be undone.
+        a.btn.btn-danger.btn-block.btn-sm.confirm-cancel href="" ng-click="cancelJob()"
+          span.glyphicon.glyphicon-remove
+          | Yes, cancel this job
+        a.btn.btn-link.btn-block.btn-sm href="" ng-click="cancelCollapsed = true"
+          | No, keep this job
+  .row ng-hide="showActivity"
+    .col-md-12
+      h4
+        | Work Orders
+        a.btn.btn-link href="#/jobs/{{ job.id }}/work_orders/new"
+          i.fa.fa-plus-circle>
+          | New Work Order
+  .row ng-hide="showActivity"
+    .col-md-8 ng-hide="job.work_orders.length == 0"
+      spinner
+      table.table ng-hide="showActivity || !job.work_orders || job.work_orders.length == 0"
+        tr
+          th #
+          th Customer
+          th Scheduled Date
+          th Duration
+          th Status
+          th Actions
+        tr work-order-row="true" workOrder="workOrder" ng-repeat="workOrder in job.work_orders"
+  .row ng-hide="showActivity"
+    .col-md-12
+      button.btn.btn-primary type="submit" ng-disabled="form.$invalid"
+        i.fa.fa-save>
+        | Update Job
+      a.btn.btn-link ng-href="#/jobs"
+        i.fa.fa-close>
+        | Cancel

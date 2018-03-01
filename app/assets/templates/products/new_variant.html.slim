@@ -1,0 +1,41 @@
+form.product-form.edit-product novalidate=true name="form" ng-controller="NewProductVariantCtrl" ng-submit="submit()"
+  .row
+    .col-md-12
+      h3 New Product Variant
+  spinner
+  .row ng-hide="showActivity"
+    .form-group.col-md-4
+      label.control-label.required Name
+      input.form-control.name name="name" type="text" required="true" ng-model="product.data.name"
+    .form-group.col-md-4
+      label.control-label.required GTIN (e.g. UPC-12, EAN/UCC-13, EAN/UCC-8, etc.)
+      input.form-control.name name="gtin" type="text" required="true" ng-model="product.gtin"
+  .row ng-hide="showActivity"
+    .form-group.col-md-4
+      label.control-label Tier
+      input.form-control.name name="tier" type="text" ng-model="product.tier"
+    .form-group.col-md-4
+      label.control-label Style
+      input.form-control.name name="style" type="text" ng-model="product.data.style"
+  .row ng-hide="showActivity"
+    .form-group.col-md-4
+      label.control-label Size
+      input.form-control.name name="size" type="text" ng-model="product.data.size"
+    .form-group.col-md-4
+      label.control-label Color
+      input.form-control.name name="color" type="text" ng-model="product.data.color"
+  .row ng-hide="showActivity"
+    .form-group.col-md-4
+      label.control-label Price
+      input.form-control.name name="price" type="text" ng-model="product.data.price"
+    .form-group.col-md-4
+      label.control-label Unit of Measure
+      input.form-control.name name="unit_of_measure" type="text" ng-model="product.data.unit_of_measure"
+  .row ng-hide="showActivity"
+    .col-md-12
+      button.btn.btn-primary type="submit" ng-disabled="form.$invalid"
+        i.fa.fa-save>
+        | Create Product
+      a.btn.btn-link ng-href="#/products/{{product.id}}"
+        i.fa.fa-close>
+        | Cancel

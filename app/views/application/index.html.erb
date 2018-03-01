@@ -1,0 +1,15 @@
+<div ng-view></div>
+
+<% content_for :scripts do %>
+  <%= javascript_include_tag :provide %>
+  <script type="application/javascript">
+    (function() {
+      angular.module('unicornApp.values')
+        .constant('baseUrl', '<%= Settings.app.url %>')
+        .constant('recaptchaSiteKey', '<%= Rails.application.config.recaptcha_site_key || 'void 0' %>')
+        .constant('userId', <%= (current_user && current_user.id) || 'void 0' %>)
+        .constant('defaultCompanyId', <%= (current_user && request.cookies['x-api-company-id']) || (current_user && current_user.default_company_id) || 'void 0' %>)
+        .constant('userPreferences', <%= current_user ? raw(current_user.preferences.to_json) : '{}' %>);
+    })();
+  </script>
+<% end %>

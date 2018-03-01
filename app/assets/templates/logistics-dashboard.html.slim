@@ -1,0 +1,171 @@
+div ng-controller="LogisticsDashboardCtrl"
+  .dashboard.container.with-chat
+    .row ng-hide="!market"
+      .col-lg-12
+        .text-right.dropdown-ctrl
+          span.dropdown-txt Hide
+          span.fa.fa-angle-up
+        .widget-boxes.row
+          .col-lg-12
+            .row
+              .col-lg-3.col-sm-6
+                .widget-box
+                  .counter.green
+                    span ng-hide="!routes || routes.length == 0" {{ routes.length }}
+                    scope-spinner ng-hide="routes.length > 0"
+                  .text
+                    div ng-hide="!market"
+                      strong Zones
+                      span ng-hide="!market" Servicing {{ market.name }}
+              .col-lg-3.col-sm-6
+                /! Traffic/weather Conditions
+                .widget-box
+                  .counter.red
+                    span ng-hide="!market" Heavy
+                    scope-spinner ng-hide="market"
+                  .text
+                    div ng-hide="!market"
+                      strong Traffic Conditions
+                      span ng-hide="!market" the West Loop is a parking lot
+              .col-lg-3.col-sm-6
+                /! Daily Disposition
+                .widget-box
+                  .counter.blue
+                    span ng-hide="!company" Calm
+                    scope-spinner ng-hide="company"
+                  .text
+                    div ng-hide="!company"
+                      strong Today
+                      span ng-hide="!company" at {{ company.name }}
+              .col-lg-3.col-sm-6
+                /! Deliveries Today
+                .widget-box
+                  .counter.yellow
+                    span ng-hide="!routes || routes.length == 0"
+                      | {{ deliveryVolume }}
+                    scope-spinner ng-hide="routes.length > 0"
+                  .text
+                    div ng-hide="!scheduledStartAt"
+                      strong Pieces
+                      span Delivered Since {{ scheduledStartAt | date: 'h:mm a' }}
+    .row ng-hide="!company"
+      .col-lg-12
+        spinner
+        ul.routes
+          li.route-box ng-repeat="route in routes" ng-click="viewRoute(route)"
+            .box
+              scope-spinner ng-hide="route && route.provider_origin_assignment"
+              .content.no-padding
+                .pull-left.route-header-image
+                  img ng-src="{{ route.provider_origin_assignment.provider.profile_image_url }}" alt="{{ route.provider_origin_assignment.provider.contact.name }}"
+                .pull-right.route-header-details
+                  .route-header.box-title
+                    .title
+                      span.teal ng-hide="!route.id"
+                        | {{ route.identifier || route.name || '(unnamed route)' }}
+                      span.badge.route-status-badge ng-class="routeBadgeClassName(route)"
+                        | {{ route.status }}
+                    .actions
+                      .pull-left
+                        button.manifest-btn.complete-route-btn ng-show="route && route.status == 'pending_completion'" ng-click="completeRoute(route, $event)"
+                          span
+                            |
+                            span.fa.fa-flag-checkered
+                      .pull-left
+                        button.manifest-btn ng-hide="!route.id" ng-click="openManifest(route, $event)"
+                          span
+                            |
+                            span.fa.fa-list-alt
+                      .pull-left
+                        button.manifest-btn ng-hide="!route.id || ['scheduled', 'loading'].indexOf(route.status) == -1" ng-click="recalculateRoute(route, $event)"
+                          span
+                            |
+                            span.fa.fa-refresh ng-class="recalculateRouteIconClassName(route)"
+                    .provider-name
+                      span
+                        | {{ route.provider_origin_assignment.provider.contact.name }} @ {{ route.started_at ? (route.started_at | date: 'h:mm a') : (route.scheduled_start_at ? (route.scheduled_start_at | date: 'h:mm a') : '--') }}
+                .content.route-content
+                  route-map-canvas element-id="route_map_{{ route.id }}" center-coordinate="{{ route.provider_origin_assignment.origin.contact.latitude }}, {{ route.provider_origin_assignment.origin.contact.longitude }}"
+  .container.filters
+    .row
+      .col-lg-12
+        .row
+          .col-lg-12.text-left
+            .box
+              .content
+                span.boxes-label-container
+                  label.boxes-label-default
+                    | Market
+                    span.boxes-label-required (required)
+                  .boxes-select
+                    select.form-control required="true" ng-model="marketId" ng-options="market.id as market.name for market in markets"
+                      option value="" Select market:
+                span.boxes-label-container
+                  label.boxes-label-default
+                    | Origin
+                    span.boxes-label-required (required)
+                  .boxes-select
+                    select.form-control required="true" ng-model="originId" ng-options="origin.id as origin.contact.name for origin in origins"
+                      option value="" --
+                span.boxes-label-container
+                  label.boxes-label-default
+                    | Provider
+                  .boxes-select
+                    select.form-control class="provider-origin-assignment-select" required="true" ng-model="providerOriginAssignmentId" ng-options="assignment.id as assignment.provider.contact.name for assignment in providerOriginAssignments"
+                      option value="" --
+                span.boxes-label-container
+                  label.boxes-label-default
+                    | Date
+                  span.boxes-label-required (required)
+                  .input-group
+                    input.form-control type="text" datepicker-popup="MMMM dd, yyyy" ng-model="date" is-open="datePickerOpen" close-text="Close"
+                    span.input-group-btn
+                      button.btn.btn-default type="button" ng-click="openDatePicker('datePickerOpen', $event)"
+                        i.fa.fa-calendar
+          .col-lg-12
+            .panel.panel-default
+              .panel-heading
+                h3.panel-title Filter Routes
+              .panel-body
+                form.filter-form.work-orders-filter
+                  .form-group
+                    label.control-label By status
+                    .input-group.checkbox-group
+                      label.checkbox
+                        input type="checkbox" name="awaiting_schedule" ng-model="filter.status.awaiting_schedule"
+                        | Awaiting schedule
+                      label.checkbox
+                        input type="checkbox" name="scheduled" ng-model="filter.status.scheduled"
+                        | Scheduled
+                      label.checkbox
+                        input type="checkbox" name="loading" ng-model="filter.status.loading"
+                        | Loading
+                      label.checkbox
+                        input type="checkbox" name="in_progress" ng-model="filter.status.in_progress"
+                        | In progress
+                      label.checkbox
+                        input type="checkbox" name="unloading" ng-model="filter.status.unloading"
+                        | Unloading
+                      label.checkbox
+                        input type="checkbox" name="pending_completion" ng-model="filter.status.pending_completion"
+                        | Pending Completion
+                      label.checkbox
+                        input type="checkbox" name="completed" ng-model="filter.status.completed"
+                        | Completed
+                      label.checkbox
+                        input type="checkbox" name="canceled" ng-model="filter.status.canceled"
+                        | Canceled
+                  .form-group
+                    label.control-label On or After
+                    .input-group.on-or-after
+                      input.form-control.on-or-after type="text" ng-model="filter.onOrAfter" datepicker-popup="yyyy-MM-dd" is-open="onOrAfterOpened" datepicker-options="{showWeeks: false}"
+                      span.input-group-btn
+                        button.btn.btn-default type="button" ng-click="toggle($event, 'onOrAfterOpened')"
+                          i.fa.fa-calendar
+                  .form-group
+                    label.control-label On or Before
+                    .input-group.on-or-before
+                      input.form-control.on-or-before type="text" ng-model="filter.onOrBefore" datepicker-popup="yyyy-MM-dd" is-open="onOrBeforeOpened" datepicker-options="{showWeeks: false}"
+                      span.input-group-btn
+                        button.btn.btn-default type="button" ng-click="toggle($event, 'onOrBeforeOpened')"
+                          i.fa.fa-calendar

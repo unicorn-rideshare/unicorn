@@ -1,1 +1,0 @@
-ENV['EXECJS_RUNTIME'] ||= 'Node'

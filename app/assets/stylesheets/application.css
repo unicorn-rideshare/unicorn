@@ -12,14 +12,4 @@
  *
  *= require_tree .
  *= require_self
- *= require bootstrap-sass
- *= require angular-wizard
- *= require angular-bootstrap-datetimepicker
- *= require font-awesome/css/font-awesome
- *= require json-formatter
- *= require pickadate/lib/themes/classic
- *= require pickadate/lib/themes/classic.time
- *= require validations
- *= require dashboard
- *= stub customer
  */

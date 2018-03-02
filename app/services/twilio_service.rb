@@ -1,7 +1,6 @@
 class TwilioService
 
   class << self
-
     def send_sms(recipients, body)
       recipients.each do |recipient|
         twilio_client.account.messages.create(
@@ -31,6 +30,5 @@ class TwilioService
     def twilio_client
       Rails.application.config.twilio_client
     end
-
   end
 end

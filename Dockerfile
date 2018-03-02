@@ -2,10 +2,10 @@ FROM ubuntu:latest
 
 RUN /bin/bash -l -c 'useradd provide -s /bin/bash'
 
-RUN /bin/bash -l -c 'apt-get update -qq && apt-get upgrade -y && apt-get install -y curl wget git nginx nodejs npm ruby g++ qt5-default libqt5webkit5-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev qt5-qmake libpq-dev sudo unattended-upgrades'
+RUN /bin/bash -l -c 'apt-get update -qq && apt-get upgrade -y && apt-get install -y curl wget git nginx nodejs npm ruby g++ libcurl4-openssl-dev libpq-dev sudo unattended-upgrades'
 RUN /bin/bash -l -c 'echo -e "APT::Periodic::Update-Package-Lists \"1\";\nAPT::Periodic::Unattended-Upgrade \"1\";\n" > /etc/apt/apt.conf.d/20auto-upgrades'
 
-RUN /bin/bash -l -c 'npm install -g n && n stable && npm install bower -g'
+RUN /bin/bash -l -c 'npm install -g n && n stable'
 
 #ADD https://github.com/papertrail/remote_syslog2/releases/download/v0.18/remote_syslog_linux_amd64.tar.gz .
 #ADD remote_syslog_linux_amd64.tar.gz remote_syslog_linux_amd64.tar.gz
@@ -45,7 +45,7 @@ WORKDIR $APP_HOME
 
 RUN /bin/bash -l -c 'git clone git@github.com:provideapp/unicorn.git /opt/unicorn'
 RUN /bin/bash -l -c 'gem install bundler'
-RUN /bin/bash -l -c 'source /etc/profile.d/rvm.sh && bundle install && bundle exec rake bower:install'
+RUN /bin/bash -l -c 'source /etc/profile.d/rvm.sh && bundle install'
 
 RUN /bin/bash -l -c 'mkdir -p tmp'
 

@@ -80,6 +80,4 @@ Rails.application.routes.draw do
     end
     resources :tasks, only: [:index, :show, :create, :update, :destroy], id: id_regex
   end
-
-  resources :work_orders, only: [:show]
 end

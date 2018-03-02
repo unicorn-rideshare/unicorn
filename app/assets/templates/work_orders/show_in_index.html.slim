@@ -1,8 +1,0 @@
-tr.work-order id="workOrder_{{ workOrder.id }}"
-  td.work-order-id {{ workOrder.id }}
-  td.work-order-customer {{ workOrder.customer | contactName }}
-  td.work-order-scheduled-date {{ workOrder.scheduled_start_at | date: 'EEE. M/dd, h:mm a' }}
-  td.work-order-estimated-duration {{ workOrder.estimated_duration | duration }}
-  td.work-order-status {{ workOrder.status }}
-  td.work-order-actions
-    a ng-href="#/work_orders/{{ workOrder.id }}/edit" Edit

@@ -11,7 +11,6 @@ gem 'bcrypt', '3.1.10'
 gem 'cancancan', '~> 1.13'
 gem 'chunky_png', '1.3.4'
 gem 'crypt_keeper', '1.1.1'
-gem 'execjs', '2.7.0'
 gem 'eth', '0.4.4'
 gem 'gcm', '0.1.0'
 gem 'houston', '2.2.3'
@@ -44,12 +43,6 @@ gem 'websocket-rails', '0.7.0'
 gem 'hiredis'
 gem 'redis', '3.2.1', require: %w(redis redis/connection/hiredis)
 
-gem 'bower-rails', '~> 0.9.2'
-gem 'coffee-rails', '~> 4.1.0'
-gem 'sass-rails', '~> 5.0'
-gem 'slim-rails', '~> 3.1.1'
-gem 'uglifier', '>= 1.3.0'
-
 group :production do
   gem 'unicorn', '~> 4.9'
   gem 'unicorn-worker-killer', '0.4.4'
@@ -60,20 +53,14 @@ group :development, :test do
   gem 'bullet', '5.0.0'
   gem 'factory_girl_rails', '~> 4.5'
   gem 'faker', '~> 1.4'
-  gem 'phantomjs', '~> 1.9.8'
   gem 'pry', '~> 0.10'
   gem 'pry-highlight', '~> 0.1'
   gem 'pry-stack_explorer', '~> 0.4.9'
   gem 'rspec-rails', '~> 3.2'
-  gem 'teaspoon', '~> 0.8.0'
 end
 
 group :test do
-  gem 'capybara', '~> 2.4'
-  gem 'capybara-webkit', '~> 1.5'
-  gem 'chromedriver-helper', '~> 0.0.8'
   gem 'database_cleaner', '~> 1.4'
-  gem 'poltergeist', '~> 1.6'
   gem 'resque_spec', '~> 0.16'
   gem 'shoulda-matchers', '~> 2.8'
   gem 'simplecov', '~> 0.10'

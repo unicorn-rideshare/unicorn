@@ -1,9 +1,0 @@
-.form-group ng-controller="SearchCtrl"
-  input.form-control type="text" placeholder="{{ placeholder }}" ng-disabled="{{ disabled }}" ng-model="queryString" ng-focus="focusedQueryStringInput($event)" ng-blur="blurredQueryStringInput($event)" ng-keypress="changedQueryString($event)" ng-keyup="changedQueryString($event)"
-  ol.search-results ng-hide="queryInputIsBlurred || (allResults.length == 0 || hideDefaultSearchResults)"
-    li ng-repeat="result in allResults" ng-click="resultSelected(result)"
-      h6.no-margin
-        | {{ displayNameForResult(result) }}
-    li ng-class="{'more-results': hasNextPage, 'more-results disabled': !hasNextPage}" ng-click="search()"
-      p
-        | Load more results

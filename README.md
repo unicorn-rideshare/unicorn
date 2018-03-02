@@ -45,13 +45,3 @@ These instructions are specific to setting up a local development environment on
 - Run a local rails server bound to all local interfaces:
 
   `# rails s -b 0.0.0.0`
-
-- OSX/homebrew troubleshooting `bundle install` failures:
-
-  - capybara-webkit installation issues (i.e.: *"sh: qmake: command not found"*):
-
-    `# brew install qt@5.5 && brew link --force qt@5.5`
-
-  - Nokogiri gem installation issues (i.e.: *"An error occurred while installing nokogiri (1.7.0.1), and Bundler cannot continue"*):
-
-    `# gem install nokogiri -v '1.7.0.1' -- --with-xml2-dir=/usr/local/opt/libxml2/include/libxml2`

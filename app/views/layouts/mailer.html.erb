@@ -5,37 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <meta name="msapplication-config" content="none" />
   <title><%= Settings.app.name %></title>
-  <%= stylesheet_link_tag 'application', media: 'all' %>
-  <%= stylesheet_link_tag 'no-animations', media: 'all' if Rails.env.test? %>
 </head>
 <body>
-
-<header>
-  <nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
-    <div class="container-fluid">
-
-    </div>
-  </nav>
-
-</header>
-
 <div class="container">
-
   <div flash-messages></div>
-
   <%= yield %>
-
 </div>
-
-<% if Rails.env.production? && Rails.application.config.segment_io_write_key %>
-    <script type="text/javascript">
-        window.analytics=window.analytics||[],window.analytics.methods=["identify","group","track","page","pageview","alias","ready","on","once","off","trackLink","trackForm","trackClick","trackSubmit"],window.analytics.factory=function(t){return function(){var a=Array.prototype.slice.call(arguments);return a.unshift(t),window.analytics.push(a),window.analytics}};for(var i=0;i<window.analytics.methods.length;i++){var key=window.analytics.methods[i];window.analytics[key]=window.analytics.factory(key)}window.analytics.load=function(t){if(!document.getElementById("analytics-js")){var a=document.createElement("script");a.type="text/javascript",a.id="analytics-js",a.async=!0,a.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.io/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n)}},window.analytics.SNIPPET_VERSION="2.0.9",
-                window.analytics.load("<%= Rails.application.config.segment_io_write_key %>");
-        window.analytics.page();
-    </script>
-<% end %>
-<%= javascript_include_tag :application %>
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN80jYxOQj41OMxrf8JhGts2gCt0AkXzE"></script>
 <%= yield :scripts %>
 </body>
 </html>

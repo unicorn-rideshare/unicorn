@@ -107,7 +107,7 @@ module Api
       has_work_order_providers = params.key? :work_order_providers
       params[:work_order_products_attributes] = params.delete(:materials) if has_materials
       params[:work_order_products_attributes] ||= [] if has_materials
-      params[:work_order_providers_attributes] = params.delete(:work_order_providers).map { |wop| wop[:provider_id] = wop[:provider_id].to_i } if has_work_order_providers
+      params[:work_order_providers_attributes] = params.delete(:work_order_providers).map { |wop| wop[:provider_id] = wop[:provider_id].to_i } if has_work_order_providers && params[:work_order_providers]
       params[:work_order_providers_attributes] ||= [] if has_work_order_providers
       params.permit(
         :category_id, :company_id, :customer_id, :floorplan_id, :job_id, :user_id, :description,

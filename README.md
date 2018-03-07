@@ -52,6 +52,6 @@ These instructions are specific to setting up a local development environment on
 
     `# brew install qt@5.5 && brew link --force qt@5.5`
 
-  - Nokogiri gem installation issues (i.e.: *"An error occurred while installing nokogiri (1.7.0.1), and Bundler cannot continue"*):
+  - Nokogiri gem installation issues (i.e.: *"An error occurred while installing nokogiri (1.8.2), and Bundler cannot continue"*):
 
-    `# gem install nokogiri -v '1.7.0.1' -- --with-xml2-dir=/usr/local/opt/libxml2/include/libxml2`
+    `# gem install nokogiri -v '1.8.2' -- --with-xml2-dir=/usr/local/opt/libxml2/include/libxml2`

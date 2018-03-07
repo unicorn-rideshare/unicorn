@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 ruby '2.3.1'
 
-gem 'rails', '4.2.4'
+gem 'rails', '4.2.7.1'
 
 gem 'aasm', '3.4.0'
 gem 'activerecord-postgis-adapter', '3.1.2'

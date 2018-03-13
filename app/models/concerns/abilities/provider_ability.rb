@@ -108,7 +108,7 @@ module ProviderAbility
         end
         authorized
       end  if [Contact, Provider].include?(resource)
-      cannot [:create, :update], Provider, company_id: nil if [Contact, Provider].include?(resource)
+      cannot :create, Provider, company_id: nil if [Contact, Provider].include?(resource)
 
       can [:read, :update], Route, id: provider_accessible_route_ids if [Route, RouteLeg].include?(resource)
 

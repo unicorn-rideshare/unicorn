@@ -116,7 +116,6 @@ module ProviderAbility
 
       can [:read, :update], WorkOrder, id: provider_accessible_company_work_order_ids if [Attachment, Comment, Expense, WorkOrder].include?(resource)
       can [:create, :read, :update], WorkOrder, job_id: provider_supervisor_company_job_ids if [Attachment, Comment, Expense, WorkOrder].include?(resource)
-      cannot :create, WorkOrder, company_id: nil if [Attachment, Comment, Expense, WorkOrder].include?(resource)
 
       can [:read, :update], Job, id: (provider_supervisor_company_job_ids + provider_accessible_company_job_ids).uniq if [Attachment, Comment, Expense, Job].include?(resource)
 

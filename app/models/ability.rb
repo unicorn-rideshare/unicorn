@@ -1,7 +1,6 @@
 class Ability
   include CanCan::Ability
   include AdminAbility
-  include ApplicationUserAbility
   include CompanyAbility
   include CompanyAdminAbility
   include DispatcherAbility

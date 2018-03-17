@@ -23,7 +23,6 @@ class Ability
 
     if authenticable
       user_abilities if is_user?
-      application_user_abilities if is_user? && !is_admin? && !is_company_api? && !is_company_admin? && !is_provider? && !is_dispatcher?
       admin_abilities if is_admin?
       company_abilities if is_company_api?
       company_admin_abilities if is_company_admin?

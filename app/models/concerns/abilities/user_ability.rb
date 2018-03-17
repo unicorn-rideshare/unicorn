@@ -17,6 +17,9 @@ module UserAbility
 
       can [:create, :charge, :read, :destroy], PaymentMethod, user_id: authenticable.id
 
+      can :read, Provider, company_id: nil
+      can :crud, Provider, user_id: authenticable.id
+
       can [:create, :destroy], Token, authenticable_type: User.name, authenticable_id: authenticable.id
 
       can [:read, :update], User, id: authenticable.id

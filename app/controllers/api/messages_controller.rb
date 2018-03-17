@@ -3,7 +3,7 @@ module Api
     load_and_authorize_resource
 
     def index
-      @messages = filtered_messages.to_a.reverse
+      @messages = filter_by(@messages, indexes).to_a.reverse
       respond_with(:api, @messages)
     end
 
@@ -19,13 +19,6 @@ module Api
     end
 
     private
-
-    def filtered_messages
-      page = (params[:page] || 1).to_i
-      rpp = (params[:rpp] || 10).to_i
-      @messages = @messages.limit(rpp).offset((page - 1) * rpp)
-      @messages
-    end
 
     def indexes
       [:sender_id, :recipient_id]

@@ -3,6 +3,7 @@ object @job => nil
 attributes :id,
            :company_id,
            :customer_id,
+           :config,
            :name,
            :type,
            :status,

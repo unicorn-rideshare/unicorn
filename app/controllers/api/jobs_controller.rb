@@ -3,6 +3,7 @@ module Api
     load_and_authorize_resource
 
     before_action :handle_status_transition, only: [:create, :update], unless: lambda { params[:status].nil? }
+    around_action :update_config, only: [:create, :update], unless: lambda { params[:config].nil? }
     around_action :update_supervisors, only: [:create, :update], unless: lambda { params[:supervisors].nil? }
 
     def index
@@ -61,13 +62,19 @@ module Api
       params[:job_products_attributes] = params.delete(:materials) if has_materials
       params[:job_products_attributes] ||= [] if has_materials
       params.permit(
-          :company_id, :customer_id, :name, :status, :type, :quoted_price_per_sq_ft, :total_sq_ft, :wizard_mode,
+          :company_id, :customer_id, :name, :status, :type, :config, :quoted_price_per_sq_ft, :total_sq_ft, :wizard_mode,
           job_products_attributes: [:id, :product_id, :initial_quantity, :price]
       )
     end
 
     def indexes
       [:company_id, :customer_id, :job_id, :type]
+    end
+
+    def update_config
+      config = params[:config]
+      @job.config = config.with_indifferent_access
+      yield
     end
 
     def update_supervisors

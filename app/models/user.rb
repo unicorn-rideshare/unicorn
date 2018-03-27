@@ -161,18 +161,20 @@ class User < ActiveRecord::Base
   private
 
   def create_prvd_user
-    status, prvd_user = IdentService.create_user(nil, {
+    jwt = ENV['IDENT_APPLICATION_API_KEY']
+    return unless jwt
+    status, prvd_user = IdentService.create_user(jwt, {
       name: self.name,
       email: self.email,
       password: self.password,
     })
     if status == 201 && prvd_user && prvd_user['id']
       self.update_attributes(prvd_user_id: prvd_user['id']) if prvd_user && prvd_user['id']
-      jwt_token = IdentService.authenticate(nil, {
+      auth_status, jwt_token = IdentService.authenticate(jwt, {
         email: self.email,
         password: self.password,
-      })['token'] rescue nil
-      self.jwt_tokens.create(token: jwt_token['token']) if jwt_token && jwt_token['token']
+      })
+      self.jwt_tokens.create(token: jwt_token['token']) if auth_status == 201 && jwt_token && jwt_token['token']
     end
   end
 

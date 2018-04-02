@@ -10,10 +10,22 @@ class FetchContractCreationAddressJob
       return unless jwt
 
       status, resp = BlockchainService.transaction_details(jwt, tx_id)
-      contract_creation_addr = resp['traces']['result'].select { |result| result['type'].to_s.match(/^create$/i) }.first['result']['address']
-      return unless contract_creation_addr
-
-      work_order.update_attribute(:eth_contract_address, contract_creation_addr)
+      if status == 200
+        _trace = resp['traces']['result']
+        while _trace.nil?
+          sleep(1.0)
+          status, resp = BlockchainService.transaction_details(jwt, tx_id)
+          if status == 200
+            _trace = resp['traces']['result']
+          else
+            raise RuntimeError("Received invalid status code from tx details API: #{status}")
+          end
+        end
+        
+        contract_creation_addr = _trace.select { |_trace| _trace['type'].to_s.match(/^create$/i) }.first['result']['address'] rescue nil
+        return unless contract_creation_addr
+        work_order.update_attribute(:eth_contract_address, contract_creation_addr)
+      end
     end
   end
 end

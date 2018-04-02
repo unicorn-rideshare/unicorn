@@ -579,7 +579,7 @@ EOF
     self.config = cfg.with_indifferent_access
     self.save
 
-    Resque.enqueue(FetchContractCreationAddressJob, wo.id)
+    Resque.enqueue(FetchContractCreationAddressJob, wo.id, latest_tx_result['id'])
   end
 
   def work_order_products_attributes=(work_order_products_attributes)

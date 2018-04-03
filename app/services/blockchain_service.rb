@@ -15,6 +15,10 @@ class BlockchainService
       goldmine(jwt_token).contracts(params)
     end
 
+    def create_contract(jwt_token, params)
+      goldmine(jwt_token).create_contract(params)
+    end
+
     def execute_contract(jwt_token, contract_id, params)
       goldmine(jwt_token).execute_contract(contract_id, params)
     end

@@ -1,4 +1,4 @@
-class ExecuteWorkOrderContractJobh
+class ExecuteWorkOrderContractJob
   @queue = :high
 
   class << self

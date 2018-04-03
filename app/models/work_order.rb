@@ -274,6 +274,7 @@ class WorkOrder < ActiveRecord::Base
         Resque.remove_delayed(WorkOrderConfirmationStatusCheckupJob, self.id)
         %w(scheduled_confirmation reminder morning_of_reminder).map { |mail_message| Resque.remove_delayed(WorkOrderEmailJob, self.id, mail_message.to_sym) }
         Resque.enqueue(WorkOrderCanceledJob, self.id)
+        Resque.enqueue(ExecuteWorkOrderContractJob, self.id, ENV['IDENT_APPLICATION_API_KEY'], "cancel", []) if self.eth_contract_address
       end
     end
 
@@ -298,7 +299,7 @@ class WorkOrder < ActiveRecord::Base
           self.accepted_at = DateTime.now
 
           peer = self.providers.first.user.wallets.last.address
-          Resque.enqueue(ExecuteWorkOrderContractJob, self.id, ENV['IDENT_APPLICATION_API_KEY'], "start", [peer])
+          Resque.enqueue(ExecuteWorkOrderContractJob, self.id, ENV['IDENT_APPLICATION_API_KEY'], "start", [peer]) if self.eth_contract_address
         else
           self.started_at = DateTime.now
         end

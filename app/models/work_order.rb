@@ -296,6 +296,9 @@ class WorkOrder < ActiveRecord::Base
       before do
         if self.status.to_sym == :pending_acceptance
           self.accepted_at = DateTime.now
+
+          peer = self.providers.first.user.wallets.last.address
+          Resque.enqueue(ExecuteWorkOrderContractJob, self.id, ENV['IDENT_APPLICATION_API_KEY'], "start", [peer])
         else
           self.started_at = DateTime.now
         end
@@ -378,6 +381,7 @@ class WorkOrder < ActiveRecord::Base
 
       after do
         Resque.enqueue(WorkOrderCompletedJob, self.id)
+        Resque.enqueue(ExecuteWorkOrderContractJob, self.id, ENV['IDENT_APPLICATION_API_KEY'], "complete", [0, "#{self.distance}"]) if self.eth_contract_address
       end
     end
 
@@ -578,8 +582,6 @@ EOF
 
     self.config = cfg.with_indifferent_access
     self.save
-
-    Resque.enqueue(FetchContractCreationAddressJob, self.id, latest_tx_result['id'])
   end
 
   def work_order_products_attributes=(work_order_products_attributes)
@@ -855,6 +857,7 @@ EOF
     if status == 202
       tx = resp['transaction']
       self.apply_broadcast_tx(tx) if tx
+      Resque.enqueue(FetchContractCreationAddressJob, self.id, tx['id']) if tx
     end
     return status, tx
   end

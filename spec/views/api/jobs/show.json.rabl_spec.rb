@@ -12,6 +12,7 @@ describe 'api/jobs/show' do
                                         'id' => job.id,
                                         'company_id' => job.company_id,
                                         'customer_id' => customer.id,
+                                        'config' => {},
                                         'name' => 'Cardinal Glass Plant',
                                         'type' => job.type,
                                         'status' => 'configuring',

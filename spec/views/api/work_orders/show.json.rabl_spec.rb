@@ -149,6 +149,7 @@ describe 'api/work_orders/show' do
             'id' => work_order.job_id,
             'company_id' => work_order.job.company_id,
             'customer_id' => work_order.job.customer_id,
+            'config' => {},
             'name' => nil,
             'type' => work_order.job.type,
             'status' => 'configuring',

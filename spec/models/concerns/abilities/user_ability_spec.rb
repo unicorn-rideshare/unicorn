@@ -79,7 +79,7 @@ describe UserAbility do
           end
 
           context 'provider is configured to expose availability publicly' do
-            let(:resource) { FactoryGirl.create(:provider, publicly_available: true) }
+            let(:resource) { FactoryGirl.create(:provider, company_id: nil, publicly_available: true) }
 
             subject { Ability.new(ability_user) }
 

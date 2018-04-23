@@ -44,8 +44,6 @@ class User < ActiveRecord::Base
 
   after_create :create_prvd_user
 
-  after_create :create_ethereum_wallet
-
   after_create :create_stripe_customer
 
   after_destroy :destroy_stripe_customer
@@ -100,16 +98,6 @@ class User < ActiveRecord::Base
     Resque.enqueue(CreateStripeSubscriptionJob, User.name, self.id, stripe_plan_id, stripe_card_token)
   end
 
-  def create_ethereum_wallet(ethereum_network_id = nil)
-    ethereum_network_id ||= ENV['GOLDMINE_ETHEREUM_NETWORK_ID']
-    return nil unless ethereum_network_id
-    jwt_token = jwt_tokens.first.token rescue nil
-    _, wallet = BlockchainService.create_wallet(jwt_token, {network_id: ethereum_network_id}) if jwt_token
-    wallets.create(type: 'eth',
-                   address: wallet['address'],
-                   wallet_id: wallet['id']) if wallet
-  end
-
   def default_company_id
     return preferences[:default_company_id].to_i if preferences[:default_company_id]
     return company_ids.first if company_ids.size > 0
@@ -158,23 +146,46 @@ class User < ActiveRecord::Base
     end
   end
 
+  def create_prvd_api_token(password)
+    jwt_token = ENV['PROVIDE_APPLICATION_API_TOKEN']
+    return unless jwt_token
+    IdentService.authenticate(jwt_token, {
+      email: self.email,
+      password: password,
+    })
+  end
+
+  def create_prvd_wallet(network_id = nil)
+    network_id ||= ENV['PROVIDE_NETWORK_ID']
+    jwt_token = jwt_tokens.first.token rescue nil
+    status, resp = BlockchainService.create_wallet(jwt_token, { network_id: network_id }) if jwt_token
+    wallets.create(type: 'eth',
+                   address: resp['address'],
+                   wallet_id: resp['id']) if status == 201 && resp
+  end
+
+  def update(attrs)
+    success = super(attrs)
+    IdentService.update_user(self.jwt_tokens.last.token, self.prvd_user_id, attrs) if success && self.prvd_user_id && self.jwt_tokens.size > 0
+    success
+  end
+
   private
 
   def create_prvd_user
-    jwt = ENV['IDENT_APPLICATION_API_KEY']
-    return unless jwt
-    status, prvd_user = IdentService.create_user(jwt, {
+    api_token = ENV['PROVIDE_APPLICATION_API_TOKEN']
+    return unless api_token
+    status, prvd_user = IdentService.create_user(api_token, {
       name: self.name,
       email: self.email,
       password: self.password,
     })
     if status == 201 && prvd_user && prvd_user['id']
       self.update_attributes(prvd_user_id: prvd_user['id']) if prvd_user && prvd_user['id']
-      auth_status, jwt_token = IdentService.authenticate(jwt, {
-        email: self.email,
-        password: self.password,
-      })
-      self.jwt_tokens.create(token: jwt_token['token']) if auth_status == 201 && jwt_token && jwt_token['token']
+      status, resp = self.create_prvd_api_token(self.password)
+      jwt_token = resp['token'] if status == 201 && resp && resp['token']
+      self.jwt_tokens.create(token: jwt_token['token']) if status == 201 && jwt_token && jwt_token['token']
+      self.create_prvd_wallet
     end
   end
 

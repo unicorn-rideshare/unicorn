@@ -6,8 +6,8 @@ class FetchContractCreationAddressJob
       work_order = WorkOrder.unscoped.find(work_order_id) rescue nil
       return unless work_order
 
-      network_id = ENV['GOLDMINE_ETHEREUM_NETWORK_ID']
-      jwt = ENV['IDENT_APPLICATION_API_KEY']
+      network_id = ENV['PROVIDE_NETWORK_ID']
+      jwt = ENV['PROVIDE_APPLICATION_API_TOKEN']
       return unless network_id && jwt
 
       status, resp = BlockchainService.transaction_details(jwt, tx_id)

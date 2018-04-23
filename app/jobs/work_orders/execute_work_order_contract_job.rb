@@ -7,7 +7,7 @@ class ExecuteWorkOrderContractJob
       contract_addr = work_order.try(:eth_contract_address)
       return unless work_order && contract_addr
 
-      jwt ||= ENV['IDENT_APPLICATION_API_KEY']
+      jwt ||= ENV['PROVIDE_APPLICATION_API_KEY']
       return unless jwt
 
       wallet_id = ENV['GOLDMINE_DEFAULT_APPLICATION_WALLET_ID']

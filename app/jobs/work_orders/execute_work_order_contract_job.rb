@@ -10,7 +10,7 @@ class ExecuteWorkOrderContractJob
       jwt ||= ENV['PROVIDE_APPLICATION_API_KEY']
       return unless jwt
 
-      wallet_id = ENV['GOLDMINE_DEFAULT_APPLICATION_WALLET_ID']
+      wallet_id = ENV['PROVIDE_DEFAULT_APPLICATION_WALLET_ID']
       return unless wallet_id
 
       status, resp = BlockchainService.execute_contract(jwt, contract_addr, { wallet_id: wallet_id, value: value, method: method, params: params })

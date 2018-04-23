@@ -848,8 +848,8 @@ EOF
 
   def broadcast_tx
     app_id = ENV['PROVIDE_APPLICATION_ID']
-    wallet_id = ENV['GOLDMINE_DEFAULT_APPLICATION_WALLET_ID']
-    wo_contract_id = ENV['GOLDMINE_DEFAULT_WORK_ORDER_CONTRACT_ID']
+    wallet_id = ENV['PROVIDE_DEFAULT_APPLICATION_WALLET_ID']
+    wo_contract_id = ENV['PROVIDE_DEFAULT_WORK_ORDER_CONTRACT_ID']
     jwt = ENV['PROVIDE_APPLICATION_API_KEY']
     peer_addr = self.user.wallets.last.address rescue nil
     return unless jwt && app_id && wallet_id && peer_addr

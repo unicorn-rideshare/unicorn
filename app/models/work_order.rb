@@ -274,7 +274,7 @@ class WorkOrder < ActiveRecord::Base
         Resque.remove_delayed(WorkOrderConfirmationStatusCheckupJob, self.id)
         %w(scheduled_confirmation reminder morning_of_reminder).map { |mail_message| Resque.remove_delayed(WorkOrderEmailJob, self.id, mail_message.to_sym) }
         Resque.enqueue(WorkOrderCanceledJob, self.id)
-        Resque.enqueue(ExecuteWorkOrderContractJob, self.id, ENV['PROVIDE_APPLICATION_API_KEY'], "cancel", []) if self.eth_contract_address
+        Resque.enqueue(ExecuteWorkOrderContractJob, self.id, ENV['PROVIDE_APPLICATION_API_TOKEN'], "cancel", []) if self.eth_contract_address
       end
     end
 
@@ -299,7 +299,7 @@ class WorkOrder < ActiveRecord::Base
           self.accepted_at = DateTime.now
 
           peer = self.providers.first.user.wallets.last.address
-          Resque.enqueue(ExecuteWorkOrderContractJob, self.id, ENV['PROVIDE_APPLICATION_API_KEY'], "start", [peer]) if self.eth_contract_address
+          Resque.enqueue(ExecuteWorkOrderContractJob, self.id, ENV['PROVIDE_APPLICATION_API_TOKEN'], "start", [peer]) if self.eth_contract_address
         else
           self.started_at = DateTime.now
         end
@@ -382,7 +382,7 @@ class WorkOrder < ActiveRecord::Base
 
       after do
         Resque.enqueue(WorkOrderCompletedJob, self.id)
-        Resque.enqueue(ExecuteWorkOrderContractJob, self.id, ENV['PROVIDE_APPLICATION_API_KEY'], "complete", [0, "#{self.distance}"]) if self.eth_contract_address
+        Resque.enqueue(ExecuteWorkOrderContractJob, self.id, ENV['PROVIDE_APPLICATION_API_TOKEN'], "complete", [0, "#{self.distance}"]) if self.eth_contract_address
       end
     end
 
@@ -850,7 +850,7 @@ EOF
     app_id = ENV['PROVIDE_APPLICATION_ID']
     wallet_id = ENV['PROVIDE_DEFAULT_APPLICATION_WALLET_ID']
     wo_contract_id = ENV['PROVIDE_DEFAULT_WORK_ORDER_CONTRACT_ID']
-    jwt = ENV['PROVIDE_APPLICATION_API_KEY']
+    jwt = ENV['PROVIDE_APPLICATION_API_TOKEN']
     peer_addr = self.user.wallets.last.address rescue nil
     return unless jwt && app_id && wallet_id && peer_addr
     status, resp = BlockchainService.execute_contract(jwt, wo_contract_id, { wallet_id: wallet_id, value: 0, method: 'createWorkOrder', params: [peer_addr, self.id] })

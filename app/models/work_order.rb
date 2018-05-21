@@ -274,7 +274,9 @@ class WorkOrder < ActiveRecord::Base
         Resque.remove_delayed(WorkOrderConfirmationStatusCheckupJob, self.id)
         %w(scheduled_confirmation reminder morning_of_reminder).map { |mail_message| Resque.remove_delayed(WorkOrderEmailJob, self.id, mail_message.to_sym) }
         Resque.enqueue(WorkOrderCanceledJob, self.id)
-        Resque.enqueue(ExecuteWorkOrderContractJob, self.id, ENV['PROVIDE_APPLICATION_API_TOKEN'], "cancel", []) if self.eth_contract_address
+
+        peer_wallet_id = self.user.wallets.last.try(:wallet_id) if self.user
+        Resque.enqueue(ExecuteWorkOrderContractJob, self.id, ENV['PROVIDE_APPLICATION_API_TOKEN'], peer_wallet_id, "cancel", []) if self.eth_contract_address
       end
     end
 
@@ -298,8 +300,8 @@ class WorkOrder < ActiveRecord::Base
         if self.status.to_sym == :pending_acceptance
           self.accepted_at = DateTime.now
 
-          peer = self.providers.first.user.wallets.last.address
-          Resque.enqueue(ExecuteWorkOrderContractJob, self.id, ENV['PROVIDE_APPLICATION_API_TOKEN'], "start", [peer]) if self.eth_contract_address
+          peer_wallet_id = self.providers.first.user.wallets.last.try(:wallet_id)
+          Resque.enqueue(ExecuteWorkOrderContractJob, self.id, ENV['PROVIDE_APPLICATION_API_TOKEN'], peer_wallet_id, "start", []) if self.eth_contract_address && peer_wallet_id
         else
           self.started_at = DateTime.now
         end
@@ -382,7 +384,9 @@ class WorkOrder < ActiveRecord::Base
 
       after do
         Resque.enqueue(WorkOrderCompletedJob, self.id)
-        Resque.enqueue(ExecuteWorkOrderContractJob, self.id, ENV['PROVIDE_APPLICATION_API_TOKEN'], "complete", [0, "#{self.distance}"]) if self.eth_contract_address
+    
+        peer_wallet_id = self.providers.first.user.wallets.last.try(:wallet_id)
+        Resque.enqueue(ExecuteWorkOrderContractJob, self.id, ENV['PROVIDE_APPLICATION_API_TOKEN'], peer_wallet_id, "complete", [0, "#{self.distance}"]) if self.eth_contract_address && peer_wallet_id
       end
     end
 

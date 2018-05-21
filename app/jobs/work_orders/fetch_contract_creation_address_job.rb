@@ -174,6 +174,15 @@ class FetchContractCreationAddressJob
           "type": "function"
         },
         {
+          "constant": false,
+          "inputs": [],
+          "name": "start",
+          "outputs": [],
+          "payable": false,
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
           "constant": true,
           "inputs": [],
           "name": "unicornWallet",
@@ -185,20 +194,6 @@ class FetchContractCreationAddressJob
           ],
           "payable": false,
           "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [
-            {
-              "name": "_provider",
-              "type": "address"
-            }
-          ],
-          "name": "start",
-          "outputs": [],
-          "payable": false,
-          "stateMutability": "nonpayable",
           "type": "function"
         },
         {
@@ -259,7 +254,7 @@ class FetchContractCreationAddressJob
           "anonymous": false,
           "inputs": [
             {
-              "indexed": false,
+              "indexed": true,
               "name": "_identifier",
               "type": "uint128"
             }
@@ -271,7 +266,7 @@ class FetchContractCreationAddressJob
           "anonymous": false,
           "inputs": [
             {
-              "indexed": false,
+              "indexed": true,
               "name": "_identifier",
               "type": "uint128"
             }
@@ -283,7 +278,7 @@ class FetchContractCreationAddressJob
           "anonymous": false,
           "inputs": [
             {
-              "indexed": false,
+              "indexed": true,
               "name": "_identifier",
               "type": "uint128"
             },
@@ -305,7 +300,7 @@ class FetchContractCreationAddressJob
           "anonymous": false,
           "inputs": [
             {
-              "indexed": false,
+              "indexed": true,
               "name": "_identifier",
               "type": "uint128"
             },

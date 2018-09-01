@@ -384,7 +384,7 @@ class WorkOrder < ActiveRecord::Base
 
       after do
         Resque.enqueue(WorkOrderCompletedJob, self.id)
-    
+
         peer_wallet_id = self.providers.first.user.wallets.last.try(:wallet_id)
         Resque.enqueue(ExecuteWorkOrderContractJob, self.id, ENV['PROVIDE_APPLICATION_API_TOKEN'], peer_wallet_id, "complete", [0, "#{self.distance}"]) if self.eth_contract_address && peer_wallet_id
       end
@@ -860,7 +860,16 @@ EOF
     status, resp = BlockchainService.execute_contract(jwt, wo_contract_id, { wallet_id: wallet_id, value: 0, method: 'createWorkOrder', params: [self.id] })
     tx = nil
     if status == 202
-      tx = resp['transaction']
+      if resp['transaction']
+        tx = resp['transaction']
+      else
+        tx_ref = resp['ref']
+        while tx.nil?
+          sleep(1.0)
+          status, resp = BlockchainService.transaction_details(jwt, tx_ref)
+          tx = resp if status == 200
+        end
+      end
       self.apply_broadcast_tx(tx) if tx
       Resque.enqueue(FetchContractCreationAddressJob, self.id, tx['id']) if tx
     end

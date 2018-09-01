@@ -16,7 +16,16 @@ class ExecuteWorkOrderContractJob
       status, resp = BlockchainService.execute_contract(jwt, contract_addr, { wallet_id: wallet_id, value: value, method: method, params: params })
       tx = nil
       if status == 202
-        tx = resp['transaction']
+        if resp['transaction']
+          tx = resp['transaction']
+        else
+          tx_ref = resp['ref']
+          while tx.nil?
+            sleep(1.0)
+            status, resp = BlockchainService.transaction_details(app_jwt, tx_ref)
+            tx = resp if status == 200
+          end
+        end
         work_order.apply_broadcast_tx(tx) if tx
       end
       return status, tx

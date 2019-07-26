@@ -1,4 +1,4 @@
-source 'https://rubygems.org'
+source 'http://rubygems.org'
 ruby '2.4.2'
 
 gem 'rails', '4.2.7.1'
@@ -69,8 +69,8 @@ group :development, :test do
 end
 
 group :test do
-  gem 'capybara', '~> 2.4'
-  gem 'capybara-webkit', '~> 1.5'
+  #gem 'capybara', '~> 2.4'
+  #gem 'capybara-webkit', '~> 1.5'
   gem 'chromedriver-helper', '~> 0.0.8'
   gem 'database_cleaner', '~> 1.4'
   gem 'poltergeist', '~> 1.6'

@@ -59,7 +59,7 @@ en:
       task_delegation_must_remain_in_task_company: "Task delegation must remain in the Company from which it originated"
       user_default_company_id_must_be_accessible: "User default company id must be accessible"
       work_order_category_must_match_company: "Category doesn't match Work Order's Company"
-      work_order_category_must_be_valid_for_provider_categories: "Provider\'s Categories must include Category"
+      work_order_category_must_be_valid_for_provider_categories: "Provider's Categories must include Category"
       work_order_company_confirmation: "doesn't match Work Order's Company"
       work_order_due_at_must_not_be_prior_to_scheduled_start_at: "Work Order due at must not be prior to scheduled start"
       work_order_floorplan_company_confirmation: "doesn't match Work Order's Company"

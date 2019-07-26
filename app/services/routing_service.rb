@@ -10,7 +10,7 @@ class RoutingService
 
     def autocomplete_places(query, coordinate, radius = 50, type = nil, components = nil)
       results = []
-      _, response = tourguide.places_autocomplete(query, coordinate.latitude, coordinate.longitude, radius, type, components)
+      _, _, response = tourguide.places_autocomplete(query, coordinate.latitude, coordinate.longitude, radius, type, components)
       response.each do |result|
         results << Contact.new(description: result['description'],
                                city: result['city'],
@@ -24,7 +24,7 @@ class RoutingService
       origin = waypoint_coordinates.first
       destination = waypoint_coordinates.last
 
-      _, response = tourguide.directions(origin.latitude, origin.longitude, destination.latitude, destination.longitude)
+      _, _, response = tourguide.directions(origin.latitude, origin.longitude, destination.latitude, destination.longitude)
       response
     end
 
@@ -32,7 +32,7 @@ class RoutingService
       origin = waypoint_coordinates.first
       destination = waypoint_coordinates.last
 
-      _, response = tourguide.eta(origin.latitude, origin.longitude, destination.latitude, destination.longitude)
+      _, _, response = tourguide.eta(origin.latitude, origin.longitude, destination.latitude, destination.longitude)
       response
     end
 
@@ -41,13 +41,13 @@ class RoutingService
     end
 
     def place_details(place_id)
-      _, result = tourguide.place_details(place_id)
-      result
+      _, _, response = tourguide.place_details(place_id)
+      response
     end
 
     def timezone(coordinate, timestamp = nil)
-      _, result = tourguide.timezones(coordinate.latitude, coordinate.longitude)
-      TimeZone.find(result['time_zone_id']) rescue nil
+      _, _, response = tourguide.timezones(coordinate.latitude, coordinate.longitude)
+      TimeZone.find(response['time_zone_id']) rescue nil
     end
 
     def generate_route(route, work_orders, departure_at = DateTime.now + START_TIME_OFFSET, params = { })
@@ -133,8 +133,8 @@ class RoutingService
 
       while matrix.nil? && remaining_attempts > 0
         remaining_attempts -= 1
-        code, response = tourguide.matrix(start_coords, destination_coords)
-        if code == 200
+        status, _, response = tourguide.matrix(start_coords, destination_coords)
+        if status == 200
           matrix = response
         else
           # TODO-- log this more formally

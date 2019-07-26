@@ -5,12 +5,12 @@ class GeocodingService
     end
 
     def geocode(street_number, street, city, state, postal_code)
-      _, response = tourguide.geocode(street_number, street, city, state, postal_code)
+      _, _, response = tourguide.geocode(street_number, street, city, state, postal_code)
       response
     end
 
     def reverse_geocode(coordinates)
-      _, response = tourguide.reverse_geocode(coordinates.latitude, coordinates.longitude)
+      _, _, response = tourguide.reverse_geocode(coordinates.latitude, coordinates.longitude)
       response
     end
   end

@@ -15,9 +15,9 @@
     "font-awesome": "4.3.0",
     "jquery": "2.1.1",
     "json-formatter": "0.4.1",
-    "angular-payments": "git@github.com:laurihy/angular-payments.git#9643191f2359e18d543c4abf1581f91f6729445f",
+    "angular-payments": "https://github.com/laurihy/angular-payments.git#9643191f2359e18d543c4abf1581f91f6729445f",
     "angular-wizard": "0.5.5",
-    "ng.model": "git@github.com:miamarti/ng-model.git#735e43e2aa9e4357be81b243f8a7be55012c57b9",
+    "ng.model": "https://github.com/miamarti/ng-model.git#735e43e2aa9e4357be81b243f8a7be55012c57b9",
     "pickadate": "3.5.3",
     "underscore": "1.7.0"
   },

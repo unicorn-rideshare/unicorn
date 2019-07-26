@@ -195,7 +195,7 @@ GEM
       cliver (~> 0.3.1)
       websocket-driver (>= 0.2.0)
     possessive (1.0.0)
-    provide-ruby (0.59.0)
+    provide-ruby (0.60.0)
       typhoeus (~> 1.3)
     pry (0.12.2)
       coderay (~> 1.1.0)
@@ -443,7 +443,7 @@ DEPENDENCIES
   phantomjs (~> 1.9.8)
   poltergeist (~> 1.6)
   possessive (= 1.0.0)
-  provide-ruby
+  provide-ruby (= 0.60.0)
   pry (~> 0.10)
   pry-highlight (~> 0.1)
   pry-stack_explorer (~> 0.4.9)

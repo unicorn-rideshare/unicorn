@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 ruby '2.4.2'
 
-gem 'rails', '4.2.8'
+gem 'rails', '4.2.11'
 
 gem 'aasm', '3.4.0'
 gem 'activerecord-postgis-adapter', '3.1.2'
@@ -24,7 +24,7 @@ gem 'pg', '~> 0.18'
 gem 'possessive', '1.0.0'
 gem 'provide-ruby'
 gem 'rabl', '0.11.6'
-gem 'rack-cors', '0.4.0'
+gem 'rack-cors', '>= 0.4.1'
 gem 'recaptcha', '1.1.0', require: 'recaptcha/rails'
 gem 'responders', '~> 2.1'
 gem 'resque', '1.25.2'

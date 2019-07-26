@@ -9,7 +9,10 @@
   },
   "scripts": {},
   "dependencies": {
-    "aws-sdk": "2.3.11",
-    "gm": "1.22.0"
+    "aws-sdk": "^2.500.0",
+    "gm": "^1.23.1",
+    "handlebars": ">=4.0.14",
+    "lodash.template": ">=4.5.0",
+    "mem": ">=4.0.0"
   }
 }

@@ -13,7 +13,7 @@ class ExecuteWorkOrderContractJob
       wallet_id ||= ENV['PROVIDE_DEFAULT_APPLICATION_WALLET_ID']
       return unless wallet_id
 
-      status, resp = BlockchainService.execute_contract(jwt, contract_addr, { wallet_id: wallet_id, value: value, method: method, params: params })
+      status, _, resp = BlockchainService.execute_contract(jwt, contract_addr, { wallet_id: wallet_id, value: value, method: method, params: params })
       tx = nil
       if status == 202
         if resp['transaction']
@@ -22,7 +22,7 @@ class ExecuteWorkOrderContractJob
           tx_ref = resp['ref']
           while tx.nil?
             sleep(1.0)
-            status, resp = BlockchainService.transaction_details(app_jwt, tx_ref)
+            status, _, resp = BlockchainService.transaction_details(app_jwt, tx_ref)
             tx = resp if status == 200
           end
         end

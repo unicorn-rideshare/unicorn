@@ -158,7 +158,7 @@ class User < ActiveRecord::Base
   def create_prvd_wallet(network_id = nil)
     network_id ||= ENV['PROVIDE_NETWORK_ID']
     jwt_token = jwt_tokens.first.token rescue nil
-    status, resp = BlockchainService.create_wallet(jwt_token, { network_id: network_id }) if jwt_token
+    status, _, resp = BlockchainService.create_wallet(jwt_token, { network_id: network_id }) if jwt_token
     wallets.create(type: 'eth',
                    address: resp['address'],
                    wallet_id: resp['id']) if status == 201 && resp
@@ -175,7 +175,7 @@ class User < ActiveRecord::Base
   def create_prvd_user
     api_token = ENV['PROVIDE_APPLICATION_API_TOKEN']
     return unless api_token
-    status, prvd_user = IdentService.create_user(api_token, {
+    status, _, prvd_user = IdentService.create_user(api_token, {
       name: self.name,
       email: self.email,
       password: self.password,

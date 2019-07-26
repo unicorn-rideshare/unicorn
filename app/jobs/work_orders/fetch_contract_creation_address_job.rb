@@ -10,12 +10,12 @@ class FetchContractCreationAddressJob
       jwt = ENV['PROVIDE_APPLICATION_API_TOKEN']
       return unless network_id && jwt
 
-      status, resp = BlockchainService.transaction_details(jwt, tx_id)
+      status, _, resp = BlockchainService.transaction_details(jwt, tx_id)
       if status == 200
         _trace = resp['traces']['result']
         while _trace.nil?
           sleep(1.0)
-          status, resp = BlockchainService.transaction_details(jwt, tx_id)
+          status, _, resp = BlockchainService.transaction_details(jwt, tx_id)
           if status == 200
             _trace = resp['traces']['result']
           else

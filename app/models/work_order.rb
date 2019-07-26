@@ -857,7 +857,7 @@ EOF
     jwt = ENV['PROVIDE_APPLICATION_API_TOKEN']
     peer_addr = self.user.wallets.last.address rescue nil
     return unless jwt && app_id && wallet_id && peer_addr
-    status, resp = BlockchainService.execute_contract(jwt, wo_contract_id, { wallet_id: wallet_id, value: 0, method: 'createWorkOrder', params: [self.id] })
+    status, _, resp = BlockchainService.execute_contract(jwt, wo_contract_id, { wallet_id: wallet_id, value: 0, method: 'createWorkOrder', params: [self.id] })
     tx = nil
     if status == 202
       if resp['transaction']
@@ -866,7 +866,7 @@ EOF
         tx_ref = resp['ref']
         while tx.nil?
           sleep(1.0)
-          status, resp = BlockchainService.transaction_details(jwt, tx_ref)
+          status, _, resp = BlockchainService.transaction_details(jwt, tx_ref)
           tx = resp if status == 200
         end
       end

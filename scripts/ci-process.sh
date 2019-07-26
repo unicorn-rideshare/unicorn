@@ -192,6 +192,7 @@ echo '....[PRVD] Setting Up....'
 bootstrap_environment
 get_build_info
 echo '....[PRVD] Building....'
+cd .
 bundle install
 bundle exec rake bower:install
 bundle exec rake assets:precompile

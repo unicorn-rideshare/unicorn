@@ -1,5 +1,5 @@
 #!/bin/bash
 
 source /usr/local/rvm/scripts/rvm
-rvm use ruby-2.3.1@provide &> /dev/null
+rvm use ruby-2.4.2@provide &> /dev/null
 exec bundle exec unicorn "$@"

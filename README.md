@@ -14,7 +14,7 @@ These instructions are specific to setting up a local development environment on
 
 - Install the appropriate ruby version using `rvm`:
 
-  `# rvm install ruby-2.3.1`
+  `# rvm install ruby-2.4.2`
 
 - Install the following dependencies (note that the package names below are actually the `apt` package names):
 

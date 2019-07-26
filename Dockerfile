@@ -20,7 +20,7 @@ RUN /bin/bash -l -c 'chmod 0600 /etc/pki/server.key && chmod 0600 /etc/pki/serve
 RUN /bin/bash -l -c 'mkdir ~/.gnupg && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf'
 RUN /bin/bash -l -c 'gpg2 --homedir ~/.gnupg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 && gpg --armor --export $KEY | apt-key add -'
 RUN /bin/bash -l -c 'curl -sSL https://rvm.io/mpapis.asc | gpg --import - && curl -sSL https://rvm.io/pkuczynski.asc | gpg --import -'
-RUN /bin/bash -l -c 'curl -sSL https://get.rvm.io | bash -s stable --ruby=ruby-2.3.1'
+RUN /bin/bash -l -c 'curl -sSL https://get.rvm.io | bash -s stable --ruby=ruby-2.4.2'
 RUN /bin/bash -l -c 'adduser provide rvm'
 
 RUN /bin/bash -l -c 'apt-get install -y openssh-client'

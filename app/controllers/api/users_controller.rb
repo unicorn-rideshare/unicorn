@@ -12,7 +12,7 @@ module Api
 
     def create
       user = User.find_by(email: params[:email])
-      user_exists = user.nil?
+      user_exists = !user.nil?
       force_upsert = user_exists && !params[:fb_user_id].nil? # facebook login attempts to create users repeatedly; we handle as forced upsert
       raise ActiveRecord::RecordNotUnique.new('email address taken') unless force_upsert
       if force_upsert

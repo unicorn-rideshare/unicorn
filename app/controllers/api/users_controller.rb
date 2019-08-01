@@ -2,7 +2,7 @@ module Api
   class UsersController < Api::ApplicationController
     load_and_authorize_resource
     around_action :accept_invitation, only: :create, unless: lambda { params[:invitation_token].nil? }
-    around_action :create_provider, only: :create, if: lambda { params[:create_provider].to_s.match(/^true$/i) }
+    around_action :create_provider, only: :create #, if: lambda { params[:create_provider].to_s.match(/^true$/i) }
     before_action :sanitize_email, only: [:create, :update, :reset_password]
     skip_before_action :authenticate_token!, only: [:create, :reset_password]
 

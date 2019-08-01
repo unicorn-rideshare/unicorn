@@ -57,7 +57,7 @@ module Api
     def create_provider
       yield
       provider = @user.providers.create
-      timezone = TimeZone.find(params[:contact][:time_zone_id]) rescue nil
+      timezone = TimeZone.find(params[:time_zone]) rescue (TimeZone.find(params[:contact][:time_zone_id]) rescue nil)
       Contact.create(contactable: provider,
                      name: params[:name],
                      email: params[:email],
@@ -70,7 +70,8 @@ module Api
     end
 
     def user_params
-      params[:contact_attributes] = params.delete(:contact) if params.key? :contact
+      params[:contact_attributes] = params.delete(:contact) if params.key?(:contact)
+      params[:contact_attributes] ||= { name: params[:name], email: params[:email], time_zone: params[:timezone], time_zone_id: params[:timezone] }
       params.permit(:name, :email, :password, { contact_attributes: permitted_contact_params },
                     :fb_user_id, :fb_access_token, :fb_access_token_expires_at)
     end

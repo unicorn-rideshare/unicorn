@@ -79,7 +79,7 @@ module Api
 
     def user_params
       params[:contact_attributes] = params.delete(:contact) if params.key?(:contact)
-      params[:contact_attributes] ||= { name: params[:name], email: params[:email], time_zone: params[:timezone], time_zone_id: params[:timezone] }
+      params[:contact_attributes] ||= { name: params[:name], email: params[:email], time_zone: params[:time_zone], time_zone_id: params[:time_zone] }
       params.permit(:name, :email, :password, { contact_attributes: permitted_contact_params },
                     :fb_user_id, :fb_access_token, :fb_access_token_expires_at)
     end

@@ -179,7 +179,7 @@ perform_deployment()
         ECS_TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "${ECS_TASK_DEFINITION_FAMILY}" | jq '.taskDefinition | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.compatibilities) | del(.requiresAttributes)')
         echo '....file manipulation....'
         echo $ECS_TASK_DEFINITION > $DEFINITION_FILE
-        sed -E "s/${ECS_TASK_DEFINITION_FAMILY}:[a-zA-Z0-9\.-]+/${ECS_TASK_DEFINITION_FAMILY}:${buildRef}/g" "./${DEFINITION_FILE}" > "./${MUNGED_FILE}"
+        sed -E "s/unicorn:[a-zA-Z0-9\.-]+/unicorn:${buildRef}/g" "./${DEFINITION_FILE}" > "./${MUNGED_FILE}"
         echo '....register-task-definition....'
         ECS_TASK_DEFINITION_ID=$(aws ecs register-task-definition --family "${ECS_TASK_DEFINITION_FAMILY}" --cli-input-json "file://${MUNGED_FILE}" | jq '.taskDefinition.taskDefinitionArn' | sed -E 's/.*\/(.*)"$/\1/')
         echo '....update-service....'

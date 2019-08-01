@@ -11,10 +11,14 @@ module Api
     end
 
     def create
-      user_exists = User.find_by(email: params[:email]).nil?
+      user = User.find_by(email: params[:email])
+      user_exists = user.nil?
       force_upsert = user_exists && !params[:fb_user_id].nil? # facebook login attempts to create users repeatedly; we handle as forced upsert
       raise ActiveRecord::RecordNotUnique.new('email address taken') unless force_upsert
-      return update if force_upsert
+      if force_upsert
+        @user = user
+        return update
+      end
       @user.save && true
       @token = Token.create(authenticable: @user) if @user.persisted?
       respond_with(:api, @user, template: 'api/users/create', status: :created)

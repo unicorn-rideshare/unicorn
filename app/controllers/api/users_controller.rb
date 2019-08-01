@@ -11,7 +11,7 @@ module Api
     end
 
     def create
-      raise ActiveRecord::RecordNotUnique.new('email address taken') if User.find_by(email: params[:email])
+      raise ActiveRecord::RecordNotUnique.new('email address taken') if User.find_by(email: params[:email]) && params[:fb_user_id].nil?
       @user.save && true
       @token = Token.create(authenticable: @user) if @user.persisted?
       respond_with(:api, @user, template: 'api/users/create', status: :created)

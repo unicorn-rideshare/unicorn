@@ -56,6 +56,7 @@ module Api
 
     def create_provider
       yield
+      return if @user.providers.size > 0
       provider = @user.providers.create
       timezone = TimeZone.find(params[:time_zone]) rescue (TimeZone.find(params[:contact][:time_zone_id]) rescue nil)
       Contact.create(contactable: provider,

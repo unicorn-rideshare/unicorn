@@ -95,6 +95,14 @@ class WorkOrder < ActiveRecord::Base
     unscope(:order).order('work_orders.started_at DESC NULLS LAST, work_orders.scheduled_start_at DESC NULLS LAST')
   }
 
+  scope :paid, -> {
+    where('work_orders.payment_remitted IS TRUE')
+  }
+
+  scope :unpaid, -> {
+    where('work_orders.payment_remitted IS NULL OR work_orders.payment_remitted IS FALSE')
+  }
+
   scope :started_on, lambda { |date|
     query = <<-EOS
       (DATE(work_orders.started_at) = :date)

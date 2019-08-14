@@ -26,7 +26,7 @@ class ProviderDailyPayoutJob
   end
 
   def resolve_eligible_work_orders
-    @eligible_work_orders = provider.work_orders.completed.started_on(@date)
+    @eligible_work_orders = provider.work_orders.completed.unpaid.started_on(@date)
   end
 
   def calculate_payment

@@ -45,7 +45,7 @@ class ProviderDailyPayoutJob
       currency: currency,
     }, { stripe_account: @provider.stripe_account_id })
 
-    remittance_id = payout.try(id)
+    remittance_id = payout.try(:id)
     raise RuntimeError('Remittance failed') if remittance_id.nil?
 
     @eligible_work_orders.each do |work_order|

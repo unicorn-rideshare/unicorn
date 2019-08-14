@@ -33,8 +33,21 @@ class ProviderDailyPayoutJob
     @amount = @eligible_work_orders.map(&:calculate_revenue).reduce(&:+)
   end
 
+  def currency
+    'usd'
+  end
+
   def send_payment
     return unless @payment > 0.0
+    # TODO: verifiy regional parity to ensure support prior to attempting transaction between parties...
+    charge = Stripe::Charge.create({
+      amount: @payment*100,
+      currency: currency,
+      source: "tok_visa",
+      transfer_data: {
+        destination: @provider.stripe_account_id,
+      },
+    })
   end
 
   def mobile_notification_params
@@ -48,7 +61,7 @@ class ProviderDailyPayoutJob
     {
       date: @payout.date.iso8601,
       amount: @amount,
-      currency: 'usd',
+      currency: currency,
     }
   end
 

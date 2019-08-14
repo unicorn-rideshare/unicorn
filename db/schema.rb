@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180323141531) do
+ActiveRecord::Schema.define(version: 20190814141107) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -419,6 +419,7 @@ ActiveRecord::Schema.define(version: 20180323141531) do
     t.decimal  "last_checkin_latitude",                                           precision: 15, scale: 12
     t.decimal  "last_checkin_longitude",                                          precision: 15, scale: 12
     t.decimal  "last_checkin_heading",                                            precision: 15, scale: 12
+    t.string   "stripe_account_id"
   end
 
   add_index "providers", ["available"], name: "index_providers_on_available", using: :btree

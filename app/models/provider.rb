@@ -28,6 +28,10 @@ class Provider < ActiveRecord::Base
 
   before_destroy :cleanup_roles
 
+  after_create :create_stripe_account
+
+  after_destroy :destroy_stripe_account
+
   default_scope { order('id') }
 
   scope :active, ->(checkin_recency_in_minutes = 10) {  # TODO: add test coverage
@@ -91,6 +95,29 @@ class Provider < ActiveRecord::Base
   end
 
   private
+
+  def stripe_account
+    return nil unless self.stripe_account_id
+    @stripe_account ||= begin
+      Stripe::Account.retrieve(self.stripe_account_id) rescue nil
+    end
+  end
+
+  def work_order_components
+    config[:components]
+  end
+
+  private
+
+  def create_stripe_account
+    return if self.stripe_account_id
+    Resque.enqueue(CreateStripeAccountJob, Provider.name, self.id)
+  end
+
+  def destroy_stripe_account
+    return unless self.stripe_account_id
+    Resque.enqueue(DestroyStripeAccountJob, self.stripe_account_id)
+  end
 
   def cleanup_roles
     self.user.roles.reload.each do |role|

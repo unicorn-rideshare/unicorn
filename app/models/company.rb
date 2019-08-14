@@ -66,6 +66,16 @@ class Company < ActiveRecord::Base
     Resque.enqueue(ApplyStripeCouponCodeJob, Company.name, self.id, stripe_coupon_code)
   end
 
+  def create_stripe_bank_account(stripe_bank_account_token)
+    return unless stripe_bank_account_token
+    Resque.enqueue(CreateStripeBankAccountJob, Company.name, self.id, stripe_bank_account_token)
+  end
+
+  def destroy_stripe_credit_card(stripe_bank_account_id)
+    return unless stripe_bank_account_id
+    Resque.enqueue(DestroyStripeBankAccountJob, Company.name, self.id, stripe_bank_account_id)
+  end
+
   def create_stripe_credit_card(stripe_card_token)
     return unless stripe_card_token
     Resque.enqueue(CreateStripeCreditCardJob, Company.name, self.id, stripe_card_token)

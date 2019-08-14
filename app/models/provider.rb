@@ -94,6 +94,16 @@ class Provider < ActiveRecord::Base
     self.company_id.nil?
   end
 
+  def create_stripe_bank_account(stripe_bank_account_token)
+    return unless stripe_bank_account_token
+    Resque.enqueue(CreateStripeBankAccountJob, Provider.name, self.id, stripe_bank_account_token)
+  end
+
+  def destroy_stripe_credit_card(stripe_bank_account_id)
+    return unless stripe_bank_account_id
+    Resque.enqueue(DestroyStripeBankAccountJob, Provider.name, self.id, stripe_bank_account_id)
+  end
+
   private
 
   def stripe_account

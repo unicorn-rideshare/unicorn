@@ -39,15 +39,22 @@ class ProviderDailyPayoutJob
 
   def send_payment
     return unless @payment > 0.0
-    # TODO: verifiy regional parity to ensure support prior to attempting transaction between parties...
-    charge = Stripe::Charge.create({
+    # charge = Stripe::Charge.create({
+    #   amount: @payment*100,
+    #   currency: currency,
+    #   source: "tok_visa",
+    #   transfer_data: {
+    #     destination: @provider.stripe_account_id,
+    #   },
+    # })
+
+    # TODO: verifiy regional parity to ensure support prior to attempting transaction...
+    payout = Stripe::Payout.create({
       amount: @payment*100,
       currency: currency,
-      source: "tok_visa",
-      transfer_data: {
-        destination: @provider.stripe_account_id,
-      },
-    })
+    }, { stripe_account: @provider.stripe_account_id })
+
+    # TODO: mark work order as paid or fail
   end
 
   def mobile_notification_params

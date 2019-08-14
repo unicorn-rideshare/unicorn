@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190814141107) do
+ActiveRecord::Schema.define(version: 20190814143936) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -105,9 +105,10 @@ ActiveRecord::Schema.define(version: 20190814141107) do
   create_table "companies", force: :cascade do |t|
     t.integer "user_id"
     t.string  "name"
-    t.json    "config",                default: {}, null: false
+    t.json    "config",                 default: {}, null: false
     t.string  "stripe_customer_id"
     t.string  "stripe_credit_card_id"
+    t.string  "stripe_bank_account_id"
   end
 
   add_index "companies", ["user_id"], name: "index_companies_on_user_id", using: :btree
@@ -420,6 +421,7 @@ ActiveRecord::Schema.define(version: 20190814141107) do
     t.decimal  "last_checkin_longitude",                                          precision: 15, scale: 12
     t.decimal  "last_checkin_heading",                                            precision: 15, scale: 12
     t.string   "stripe_account_id"
+    t.string   "stripe_bank_account_id"
   end
 
   add_index "providers", ["available"], name: "index_providers_on_available", using: :btree

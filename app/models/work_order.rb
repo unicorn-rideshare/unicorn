@@ -95,6 +95,13 @@ class WorkOrder < ActiveRecord::Base
     unscope(:order).order('work_orders.started_at DESC NULLS LAST, work_orders.scheduled_start_at DESC NULLS LAST')
   }
 
+  scope :started_on, lambda { |date|
+    query = <<-EOS
+      (DATE(work_orders.started_at) = :date)
+    EOS
+    where(query, date: date)
+  }
+
   scope :on, lambda { |date|
     query = <<-EOS
       (DATE(work_orders.scheduled_start_at) = :date)
@@ -564,6 +571,17 @@ EOF
       }
     end
     nil
+  end
+
+  def calculate_revenue
+    base_price = category.nil? ? 0.0 : (category.base_price || 0.0)
+    price_per_mile = category.nil? ? 0.0 : (category.price_per_mile || 0.0)
+    price_per_hour = category.nil? ? 0.0 : (category.price_per_hour || 0.0)
+    (
+      base_price +
+      (this.distance.to_f * price_per_mile) +
+      ((this.duration.to_f / 60.0) * price_per_hour)
+    ).to_f.round(2)
   end
 
   def update_user_location(checkin)

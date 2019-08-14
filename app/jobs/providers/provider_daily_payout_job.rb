@@ -74,9 +74,7 @@ class ProviderDailyPayoutJob
   end
 
   def users
-    @users ||= begin
-      return [user]
-    end
+    [user]
   end
 
   def websocket_notification_params

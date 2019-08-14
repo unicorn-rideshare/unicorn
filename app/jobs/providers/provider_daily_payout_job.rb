@@ -38,23 +38,20 @@ class ProviderDailyPayoutJob
   end
 
   def send_payment
-    return unless @payment > 0.0
-    # charge = Stripe::Charge.create({
-    #   amount: @payment*100,
-    #   currency: currency,
-    #   source: "tok_visa",
-    #   transfer_data: {
-    #     destination: @provider.stripe_account_id,
-    #   },
-    # })
-
+    return unless @amount > 0.0
     # TODO: verifiy regional parity to ensure support prior to attempting transaction...
     payout = Stripe::Payout.create({
-      amount: @payment*100,
+      amount: @amount*100,
       currency: currency,
     }, { stripe_account: @provider.stripe_account_id })
 
-    # TODO: mark work order as paid or fail
+    remittance_id = payout.try(id)
+    raise RuntimeError('Remittance failed') if remittance_id.nil?
+
+    @eligible_work_orders.each do |work_order|
+      work_order.update_attributes(remittance_id: remittance_id, 
+                                   payment_remitted: true)
+    end
   end
 
   def mobile_notification_params

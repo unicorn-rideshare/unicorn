@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190814143936) do
+ActiveRecord::Schema.define(version: 20190814155822) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -658,8 +658,8 @@ ActiveRecord::Schema.define(version: 20190814143936) do
   add_index "work_order_products", ["work_order_id"], name: "index_work_order_products_on_work_order_id", using: :btree
 
   create_table "work_order_providers", force: :cascade do |t|
-    t.integer  "provider_id",        null: false
-    t.integer  "work_order_id",      null: false
+    t.integer  "provider_id",                        null: false
+    t.integer  "work_order_id",                      null: false
     t.datetime "confirmed_at"
     t.decimal  "hourly_rate"
     t.integer  "duration"
@@ -677,8 +677,11 @@ ActiveRecord::Schema.define(version: 20190814143936) do
     t.decimal  "flat_fee_due"
     t.decimal  "hourly_rate_due"
     t.datetime "timed_out_at"
+    t.boolean  "payment_remitted",   default: false
+    t.string   "remittance_id"
   end
 
+  add_index "work_order_providers", ["payment_remitted"], name: "index_work_order_providers_on_payment_remitted", using: :btree
   add_index "work_order_providers", ["provider_id", "work_order_id"], name: "index_work_order_providers_on_provider_id_and_work_order_id", unique: true, using: :btree
   add_index "work_order_providers", ["timed_out_at"], name: "index_work_order_providers_on_timed_out_at", using: :btree
   add_index "work_order_providers", ["work_order_id"], name: "index_work_order_providers_on_work_order_id", using: :btree
@@ -696,7 +699,7 @@ ActiveRecord::Schema.define(version: 20190814143936) do
     t.date     "preferred_scheduled_start_date"
     t.integer  "origin_id"
     t.integer  "route_leg_id"
-    t.json     "config",                         default: {}, null: false
+    t.json     "config",                         default: {},    null: false
     t.datetime "started_at"
     t.datetime "ended_at"
     t.datetime "arrived_at"
@@ -720,6 +723,8 @@ ActiveRecord::Schema.define(version: 20190814143936) do
     t.string   "eth_tx_hash"
     t.string   "eth_contract_address"
     t.decimal  "price"
+    t.boolean  "payment_remitted",               default: false
+    t.string   "remittance_id"
   end
 
   add_index "work_orders", ["abandoned_at"], name: "index_work_orders_on_abandoned_at", using: :btree
@@ -728,6 +733,7 @@ ActiveRecord::Schema.define(version: 20190814143936) do
   add_index "work_orders", ["customer_id"], name: "index_work_orders_on_customer_id", using: :btree
   add_index "work_orders", ["due_at"], name: "index_work_orders_on_due_at", using: :btree
   add_index "work_orders", ["origin_id"], name: "index_work_orders_on_origin_id", using: :btree
+  add_index "work_orders", ["payment_remitted"], name: "index_work_orders_on_payment_remitted", using: :btree
   add_index "work_orders", ["preferred_scheduled_start_date"], name: "index_work_orders_on_preferred_scheduled_start_date", using: :btree
   add_index "work_orders", ["priority"], name: "index_work_orders_on_priority", using: :btree
   add_index "work_orders", ["status"], name: "index_work_orders_on_status", using: :btree

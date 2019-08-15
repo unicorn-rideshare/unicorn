@@ -9,7 +9,7 @@ class CreateStripeAccountJob
       stripe_account_id = Stripe::Account.create({
         country: 'US', # FIXME-- read country from contactable...
         type: 'custom',
-        requested_capabilities: ['platform_payments', 'card_payments'],
+        requested_capabilities: ['transfers', 'card_payments'],
       })
       instance.update_attribute(:stripe_account_id, stripe_account_id)
     end

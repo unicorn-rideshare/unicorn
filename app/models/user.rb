@@ -130,7 +130,9 @@ class User < ActiveRecord::Base
   end
 
   def profile_image_url
-    url = super
+    url = nil
+    attachment = profile_images.select { |profile_image| profile_image.tags.include?('default') }.first || profile_images.last
+    url = attachment.display_url || attachment.url if attachment
     url = "http://graph.facebook.com/#{fb_user_id}/picture?type=large" if url.nil? && !fb_user_id.nil?
     url
   end

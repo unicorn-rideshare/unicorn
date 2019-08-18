@@ -117,8 +117,6 @@ class Provider < ActiveRecord::Base
     config[:components]
   end
 
-  private
-
   def create_stripe_account
     return if self.stripe_account_id
     Resque.enqueue(CreateStripeAccountJob, Provider.name, self.id)

@@ -86,6 +86,11 @@ class Provider < ActiveRecord::Base
     last_checkin if last_checkin && last_checkin.checkin_at >= since
   end
 
+  def name
+    return "#{contact.first_name} #{contact.last_name}" if contact
+    user.name
+  end
+
   def require_contact_time_zone?
     require_contact_time_zone.nil? ? true : require_contact_time_zone
   end

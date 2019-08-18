@@ -1,6 +1,6 @@
 # unicorn rails
 
-###### *Reference implementation for `provide.services` platform APIs and the `provide.network` sidechain.*
+###### Example application leveraging the [Provide](https://provide.services) platform blockchain PaaS.
 
 #### Getting started
 

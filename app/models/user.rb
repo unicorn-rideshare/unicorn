@@ -129,6 +129,12 @@ class User < ActiveRecord::Base
     super.with_indifferent_access
   end
 
+  def profile_image_url
+    url = super
+    url = "http://graph.facebook.com/#{fb_user_id}/picture?type=large" if url.nil? && !fb_user_id.nil?
+    url
+  end
+
   def require_contact_time_zone?
     true
   end

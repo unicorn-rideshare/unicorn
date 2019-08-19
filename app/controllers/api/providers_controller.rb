@@ -43,6 +43,7 @@ module Api
 
     def filtered_providers
       @providers = @providers.by_category(params[:category_id].split(/\|/).map(&:to_i)) if params[:category_id]
+      @providers = @providers.by_user(params[:user_id].split(/\|/).map(&:to_i)) if params[:user_id]
       @providers = @providers.standalone if params[:standalone].to_s.match(/^true$/i)
       @providers = @providers.available_for_hire if params[:available].to_s.match(/^true$/i)
       @providers = @providers.unavailable_for_hire if params[:available].to_s.match(/^false$/i)

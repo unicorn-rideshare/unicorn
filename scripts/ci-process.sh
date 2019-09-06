@@ -157,10 +157,10 @@ build_docker()
     echo '....Docker Build....'
     sudo docker build -t unicorn/rails .
     echo '....Docker Tag....'
-    sudo docker tag unicorn/rails:latest "085843810865.dkr.ecr.us-east-1.amazonaws.com/unicorn/rails:${buildRef}"
+    sudo docker tag unicorn/rails:latest "${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/unicorn/rails:${buildRef}"
     echo '....Docker Push....'
     $(aws ecr get-login --no-include-email --region us-east-1)
-    sudo docker push "085843810865.dkr.ecr.us-east-1.amazonaws.com/unicorn/rails:${buildRef}"
+    sudo docker push "${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/unicorn/rails:${buildRef}"
 }
 
 perform_deployment()

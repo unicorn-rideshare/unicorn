@@ -39,7 +39,7 @@ gem 'timezone', '0.5.0'
 gem 'tzinfo-data'
 gem 'twilio-ruby', '3.11.6'
 gem 'typhoeus', '~> 1.3'
-gem 'faye-websocket', '0.10.0'
+gem 'faye-websocket', '0.11.0'
 gem 'websocket-rails', '0.7.0'
 gem 'hiredis'
 gem 'redis', '3.2.1', require: %w(redis redis/connection/hiredis)

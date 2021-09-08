@@ -56,7 +56,7 @@ group :production do
 end
 
 group :development, :test do
-  gem 'better_errors', '2.1.1'
+  gem 'better_errors', '2.9.1'
   gem 'bullet', '5.0.0'
   gem 'factory_girl_rails', '~> 4.5'
   gem 'faker', '~> 1.4'
